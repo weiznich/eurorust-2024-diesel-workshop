@@ -2,18 +2,18 @@
 
 diesel::table! {
     categories (id) {
-        id -> Integer,
+        id -> Binary,
         label -> Text,
         from_age -> Integer,
         to_age -> Integer,
         male -> Bool,
-        start_id -> Integer,
+        start_id -> Binary,
     }
 }
 
 diesel::table! {
     competitions (id) {
-        id -> Integer,
+        id -> Binary,
         name -> Text,
         description -> Text,
         date -> Date,
@@ -24,11 +24,11 @@ diesel::table! {
 
 diesel::table! {
     participants (id) {
-        id -> Integer,
+        id -> Binary,
         last_name -> Text,
         first_name -> Text,
         club -> Nullable<Text>,
-        category_id -> Integer,
+        category_id -> Binary,
         consent_agb -> Bool,
         birth_year -> Integer,
     }
@@ -36,16 +36,16 @@ diesel::table! {
 
 diesel::table! {
     participants_in_special_category (participant_id, special_category_id) {
-        participant_id -> Integer,
-        special_category_id -> Integer,
+        participant_id -> Binary,
+        special_category_id -> Binary,
     }
 }
 
 diesel::table! {
     races (id) {
-        id -> Integer,
+        id -> Binary,
         name -> Text,
-        competition_id -> Integer,
+        competition_id -> Binary,
     }
 }
 
@@ -59,25 +59,25 @@ diesel::table! {
 
 diesel::table! {
     special_categories (id) {
-        id -> Integer,
+        id -> Binary,
         short_name -> Text,
         name -> Text,
-        race_id -> Integer,
+        race_id -> Binary,
     }
 }
 
 diesel::table! {
     starts (id) {
-        id -> Integer,
+        id -> Binary,
         name -> Text,
         time -> Timestamp,
-        race_id -> Integer,
+        race_id -> Binary,
     }
 }
 
 diesel::table! {
     users (id) {
-        id -> Integer,
+        id -> Binary,
         name -> Text,
         password -> Text,
     }

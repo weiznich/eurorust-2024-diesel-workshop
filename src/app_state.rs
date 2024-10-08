@@ -1,4 +1,5 @@
 use crate::axum_ext::AcceptLanguage;
+use crate::database::diesel_ext;
 use crate::errors::Result;
 use crate::service_config::Config;
 use axum::response::Html;
@@ -96,6 +97,8 @@ async fn custom_connection_setup(
                 // otherwise this would be what you want
                 //conn.begin_test_transaction()?;
             }
+            // register custom SQL functions
+            diesel_ext::register_functions(conn)?;
             // setup instrumentation to log every query
             conn.set_instrumentation(|event: InstrumentationEvent<'_>| {
                 // This is a really simple setup that just logs every query
