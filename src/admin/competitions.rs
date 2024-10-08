@@ -1,6 +1,7 @@
 //! Admin page setup for competitions
 
 use crate::app_state::{self, AppState};
+use crate::database::schema::{categories, competitions, participants, races, starts};
 use crate::database::shared_models::Competition;
 use crate::database::Id;
 use crate::errors::Error;
@@ -9,6 +10,9 @@ use axum::extract::Path;
 use axum::response::Html;
 use axum::response::Redirect;
 use axum::{Form, Router};
+use diesel::prelude::*;
+use diesel::sqlite::Sqlite;
+use diesel::{dsl, AsChangeset, Insertable, Queryable, Selectable};
 use serde::{Deserialize, Serialize};
 use time::Date;
 
@@ -28,11 +32,16 @@ pub fn routes() -> Router<app_state::State> {
         .route("/:id", axum::routing::post(update_competition))
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Queryable, Selectable, Serialize, Debug)]
+#[diesel(table_name = competitions::table)]
+#[diesel(check_for_backend(Sqlite))]
 pub(crate) struct CompetitionWithData {
+    #[diesel(embed)]
     #[serde(flatten)]
     pub(crate) competition: Competition,
+    #[diesel(select_expression = dsl::count_distinct(races::id.nullable()))]
     pub(crate) race_count: i64,
+    #[diesel(select_expression = dsl::count(participants::id.nullable()))]
     pub(crate) participant_count: i64,
 }
 
@@ -41,7 +50,8 @@ pub(crate) struct ListCompetitionData {
     pub(crate) competitions: Vec<CompetitionWithData>,
 }
 
-#[derive(Deserialize)]
+#[derive(Insertable, Deserialize, AsChangeset)]
+#[diesel(table_name = competitions)]
 pub(crate) struct NewCompetition {
     pub(crate) name: String,
     pub(crate) description: String,
@@ -52,7 +62,17 @@ pub(crate) struct NewCompetition {
 
 #[axum::debug_handler(state = app_state::State)]
 pub(crate) async fn list_competitions(state: AppState) -> Result<Html<String>> {
-    let competitions: Vec<CompetitionWithData> = todo!("Load data for competitions");
+    let competitions = state
+        .with_connection(|conn| {
+            competitions::table
+                .left_join(races::table.left_join(
+                    starts::table.left_join(categories::table.left_join(participants::table)),
+                ))
+                .group_by(competitions::id)
+                .select(CompetitionWithData::as_select())
+                .load(conn)
+        })
+        .await?;
     state.render_template(
         "admin_competition_list.html",
         ListCompetitionData { competitions },
@@ -84,7 +104,13 @@ pub(crate) async fn create_competition(
     data: Form<NewCompetition>,
 ) -> Result<Redirect> {
     let base_url = state.base_url();
-    todo!("Insert a new competition here");
+    state
+        .with_connection(|conn| {
+            diesel::insert_into(competitions::table)
+                .values(data.0)
+                .execute(conn)
+        })
+        .await?;
 
     Ok(Redirect::to(&format!(
         "{base_url}/admin/competitions/index.html"
@@ -94,7 +120,9 @@ pub(crate) async fn create_competition(
 #[axum::debug_handler(state = app_state::State)]
 pub(crate) async fn delete_competition(state: AppState, id: Path<Id>) -> Result<Redirect> {
     let base_url = state.base_url();
-    let count: usize = todo!("Delete competition here");
+    let count = state
+        .with_connection(move |conn| diesel::delete(competitions::table.find(id.0)).execute(conn))
+        .await?;
     if count != 1 {
         Err(Error::NotFound(format!(
             "Competition with {} not found",
@@ -109,7 +137,16 @@ pub(crate) async fn delete_competition(state: AppState, id: Path<Id>) -> Result<
 
 #[axum::debug_handler(state = app_state::State)]
 pub(crate) async fn render_edit_competition(state: AppState, id: Path<Id>) -> Result<Html<String>> {
-    let competition: Competition = todo!("Load data for requested competition here");
+    let competition = state
+        .with_connection(move |conn| {
+            competitions::table
+                .find(id.0)
+                .select(Competition::as_select())
+                .first(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("Competition with id {} not found", id.0)))?;
     state.render_template(
         "create_competition.html",
         EditCompetitionData {
@@ -127,7 +164,13 @@ pub(crate) async fn update_competition(
     data: Form<NewCompetition>,
 ) -> Result<Redirect> {
     let base_url = state.base_url();
-    let count: usize = todo!("Update competition");
+    let count = state
+        .with_connection(move |conn| {
+            diesel::update(competitions::table.find(id.0))
+                .set(data.0)
+                .execute(conn)
+        })
+        .await?;
     if count != 1 {
         Err(Error::NotFound(format!(
             "Competition with {} not found",

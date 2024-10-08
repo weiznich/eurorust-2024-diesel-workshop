@@ -1,10 +1,16 @@
 //! Admin page setup for special_categories
 use crate::app_state::{self, AppState};
+use crate::database::schema::{
+    participants, participants_in_special_category, races, special_categories,
+};
 use crate::database::Id;
-use crate::errors::Result;
+use crate::errors::{Error, Result};
 use axum::extract::Path;
 use axum::response::{Html, Redirect};
 use axum::{Form, Router};
+use diesel::dsl;
+use diesel::prelude::*;
+use diesel::sqlite::Sqlite;
 use serde::{Deserialize, Serialize};
 
 pub(crate) fn routes() -> Router<app_state::State> {
@@ -35,11 +41,14 @@ pub(crate) fn routes() -> Router<app_state::State> {
         )
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Queryable, Selectable)]
+#[diesel(table_name = special_categories)]
+#[diesel(check_for_backend(Sqlite))]
 struct SpecialCategoryData {
     id: Id,
     short_name: String,
     name: String,
+    #[diesel(select_expression = dsl::count(participants::id.nullable()))]
     participant_count: i64,
 }
 
@@ -51,8 +60,16 @@ struct ListSpecialCategoriesData {
 
 #[axum::debug_handler(state = app_state::State)]
 async fn list_special_categories(state: AppState, race_id: Path<Id>) -> Result<Html<String>> {
-    let special_categories: Vec<SpecialCategoryData> =
-        todo!("Load all special categories for the provided race");
+    let special_categories = state
+        .with_connection(move |conn| {
+            special_categories::table
+                .left_join(participants_in_special_category::table.left_join(participants::table))
+                .group_by(special_categories::id)
+                .select(SpecialCategoryData::as_select())
+                .filter(special_categories::race_id.eq(race_id.0))
+                .load(conn)
+        })
+        .await?;
     state.render_template(
         "admin_list_special_categories.html",
         ListSpecialCategoriesData {
@@ -65,14 +82,29 @@ async fn list_special_categories(state: AppState, race_id: Path<Id>) -> Result<H
 #[axum::debug_handler(state = app_state::State)]
 async fn delete_special_category(state: AppState, special_id: Path<Id>) -> Result<Redirect> {
     let base_url = state.base_url();
-    let race_id: Id = todo!("Delete the special category and load the corresponding race id");
+    let race_id = state
+        .with_connection(move |conn| {
+            diesel::delete(special_categories::table.find(special_id.0))
+                .returning(special_categories::race_id)
+                .get_result::<Id>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| {
+            Error::NotFound(format!(
+                "Special category with id {} not found",
+                special_id.0
+            ))
+        })?;
     Ok(Redirect::to(&format!(
         "{base_url}/admin/races/{}/special_categories.html",
         race_id
     )))
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Queryable, Selectable)]
+#[diesel(check_for_backend(Sqlite))]
+#[diesel(table_name = special_categories)]
 struct EditSpecialCategoriesData {
     short_name: String,
     name: String,
@@ -89,7 +121,16 @@ struct SpecialCategoryFormData {
 
 #[axum::debug_handler(state = app_state::State)]
 async fn render_add_special_category(state: AppState, race_id: Path<Id>) -> Result<Html<String>> {
-    todo!("Check if the race exists");
+    state
+        .with_connection(move |conn| {
+            races::table
+                .find(race_id.0)
+                .select(races::id)
+                .get_result::<Id>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("No race with id {} found", race_id.0)))?;
     state.render_template(
         "edit_special_category.html",
         SpecialCategoryFormData {
@@ -106,8 +147,21 @@ async fn render_edit_special_category(
     state: AppState,
     special_id: Path<Id>,
 ) -> Result<Html<String>> {
-    let special_category: EditSpecialCategoriesData =
-        todo!("Load relevant data to render the edit special category form");
+    let special_category = state
+        .with_connection(move |conn| {
+            special_categories::table
+                .find(special_id.0)
+                .select(EditSpecialCategoriesData::as_select())
+                .first(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| {
+            Error::NotFound(format!(
+                "No special category with id {} found",
+                special_id.0
+            ))
+        })?;
     state.render_template(
         "edit_special_category.html",
         SpecialCategoryFormData {
@@ -119,7 +173,8 @@ async fn render_edit_special_category(
     )
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Insertable, AsChangeset)]
+#[diesel(table_name = special_categories)]
 struct SpecialCategoryFormInputData {
     short_name: String,
     name: String,
@@ -132,7 +187,21 @@ async fn update_special_category(
     data: Form<SpecialCategoryFormInputData>,
 ) -> Result<Redirect> {
     let base_url = state.base_url();
-    let race_id: Id = todo!("Update the special category and get the race id");
+    let race_id = state
+        .with_connection(move |conn| {
+            diesel::update(special_categories::table.find(special_id.0))
+                .set(data.0)
+                .returning(special_categories::race_id)
+                .get_result::<Id>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| {
+            Error::NotFound(format!(
+                "Special category with id {} not found",
+                special_id.0
+            ))
+        })?;
     Ok(Redirect::to(&format!(
         "{base_url}/admin/races/{}/special_categories.html",
         race_id
@@ -146,7 +215,13 @@ async fn add_special_category(
     data: Form<SpecialCategoryFormInputData>,
 ) -> Result<Redirect> {
     let base_url = state.base_url();
-    todo!("Insert a new special category");
+    state
+        .with_connection(move |conn| {
+            diesel::insert_into(special_categories::table)
+                .values((data.0, special_categories::race_id.eq(race_id.0)))
+                .execute(conn)
+        })
+        .await?;
     Ok(Redirect::to(&format!(
         "{base_url}/admin/races/{}/special_categories.html",
         race_id.0

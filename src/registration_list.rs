@@ -1,6 +1,8 @@
 //! Render a list of all participants for a specific competition grouped by races
 use crate::app_state::{self, AppState};
-use crate::database::schema::{categories, participants, races, starts};
+use crate::database::schema::{
+    categories, competitions, participants, races, special_categories, starts,
+};
 use crate::database::shared_models::{
     Competition, Race, SpecialCategories, SpecialCategoryPerParticipant,
 };
@@ -84,21 +86,63 @@ struct RegistrationListData {
 async fn render_registration_list(state: AppState, event_id: Path<Id>) -> Result<Html<String>> {
     let event_id = event_id.0;
 
-    // for loading this data you need to deal with different kinds of relations
-    // You want to combine joins and associations here to load the required data
     let (
         participant_list,
         competition_info,
         races,
         special_categories,
         special_categories_per_participant,
-    ): (
-        Vec<ParticipantEntry>,
-        Option<Competition>,
-        Vec<Race>,
-        Vec<Vec<SpecialCategories>>,
-        Vec<Vec<SpecialCategoryPerParticipant>>,
-    ) = todo!("Load all relevant participant data");
+    ) = state
+        .with_connection(move |conn| {
+            let competition_info = competitions::table
+                .find(event_id)
+                .select(Competition::as_select())
+                .first(conn)
+                .optional()?;
+            let races = races::table
+                .inner_join(starts::table.inner_join(categories::table))
+                .order_by((categories::from_age, races::name))
+                .filter(races::competition_id.eq(event_id))
+                .group_by(races::id)
+                .select(Race::as_select())
+                .load(conn)?;
+
+            let special_categories = SpecialCategories::belonging_to(&races)
+                .select(SpecialCategories::as_select())
+                .load(conn)?;
+            let special_categories = special_categories.grouped_by(&races);
+
+            let participants = participants::table
+                .inner_join(categories::table.inner_join(starts::table.inner_join(races::table)))
+                .filter(races::competition_id.eq(event_id))
+                .order_by((
+                    categories::from_age,
+                    races::name,
+                    participants::birth_year.desc(),
+                    participants::first_name,
+                    participants::last_name,
+                ))
+                .select(ParticipantEntry::as_select())
+                .load(conn)?;
+
+            let special_categories_per_participant =
+                SpecialCategoryPerParticipant::belonging_to(&participants)
+                    .inner_join(special_categories::table)
+                    .select(SpecialCategoryPerParticipant::as_select())
+                    .load(conn)?;
+
+            let special_categories_per_participant =
+                special_categories_per_participant.grouped_by(&participants);
+
+            Ok((
+                participants,
+                competition_info,
+                races,
+                special_categories,
+                special_categories_per_participant,
+            ))
+        })
+        .await?;
     let competition_info = competition_info
         .ok_or_else(|| Error::NotFound(format!("No competition for id {} found", event_id)))?;
 

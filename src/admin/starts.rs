@@ -1,10 +1,13 @@
 //! Admin page setup for starts
 use crate::app_state::{self, AppState};
+use crate::database::schema::{categories, participants, races, starts};
 use crate::database::Id;
-use crate::errors::Result;
+use crate::errors::{Error, Result};
 use axum::extract::Path;
 use axum::response::{Html, Redirect};
 use axum::{Form, Router};
+use diesel::sqlite::Sqlite;
+use diesel::{dsl, prelude::*};
 use serde::{Deserialize, Deserializer, Serialize};
 use time::macros::format_description;
 use time::PrimitiveDateTime;
@@ -39,18 +42,31 @@ struct ListStartData {
     starts: Vec<StartData>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Selectable, Queryable)]
+#[diesel(table_name = starts)]
+#[diesel(check_for_backend(Sqlite))]
 struct StartData {
     id: Id,
     name: String,
     time: PrimitiveDateTime,
+    #[diesel(select_expression = dsl::count_distinct(categories::id.nullable()))]
     category_count: i64,
+    #[diesel(select_expression = dsl::count(participants::id.nullable()))]
     participant_count: i64,
 }
 
 #[axum::debug_handler(state = app_state::State)]
 async fn list_starts_per_race(state: AppState, race_id: Path<Id>) -> Result<Html<String>> {
-    let starts: Vec<StartData> = todo!("Get all starts for a certain race");
+    let starts = state
+        .with_connection(move |conn| {
+            starts::table
+                .left_join(categories::table.left_join(participants::table))
+                .filter(starts::race_id.eq(race_id.0))
+                .group_by(starts::id)
+                .select(StartData::as_select())
+                .load(conn)
+        })
+        .await?;
     state.render_template(
         "admin_list_starts.html",
         ListStartData {
@@ -60,7 +76,9 @@ async fn list_starts_per_race(state: AppState, race_id: Path<Id>) -> Result<Html
     )
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Queryable, Selectable)]
+#[diesel(table_name = starts)]
+#[diesel(check_for_backend(Sqlite))]
 struct EditStartData {
     name: String,
     time: PrimitiveDateTime,
@@ -77,7 +95,16 @@ struct StartFormData {
 
 #[axum::debug_handler(state = app_state::State)]
 async fn render_create_start(state: AppState, race_id: Path<Id>) -> Result<Html<String>> {
-    todo!("Verify that the race exists");
+    state
+        .with_connection(move |conn| {
+            races::table
+                .find(race_id.0)
+                .select(races::id)
+                .get_result::<Id>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("Race with id {} not found", race_id.0)))?;
     state.render_template(
         "edit_start.html",
         StartFormData {
@@ -89,7 +116,8 @@ async fn render_create_start(state: AppState, race_id: Path<Id>) -> Result<Html<
     )
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Insertable, AsChangeset, Deserialize, Debug)]
+#[diesel(table_name = starts)]
 struct StartInputData {
     name: String,
     #[serde(deserialize_with = "parse_date")]
@@ -114,7 +142,13 @@ async fn create_start(
     data: Form<StartInputData>,
 ) -> Result<Redirect> {
     let base_url = state.base_url();
-    todo!("Insert a new start");
+    state
+        .with_connection(move |conn| {
+            diesel::insert_into(starts::table)
+                .values((data.0, starts::race_id.eq(race_id.0)))
+                .execute(conn)
+        })
+        .await?;
 
     Ok(Redirect::to(&format!(
         "{base_url}/admin/races/{}/starts.html",
@@ -125,7 +159,15 @@ async fn create_start(
 #[axum::debug_handler(state = app_state::State)]
 async fn delete_start(state: AppState, start_id: Path<Id>) -> Result<Redirect> {
     let base_url = state.base_url();
-    let race_id: Id = todo!("Delete the given start and get the corresponding race id");
+    let race_id = state
+        .with_connection(move |conn| {
+            diesel::delete(starts::table.find(start_id.0))
+                .returning(starts::race_id)
+                .get_result::<Id>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("Start with id {} not found", start_id.0)))?;
     Ok(Redirect::to(&format!(
         "{base_url}/admin/races/{}/starts.html",
         race_id,
@@ -134,7 +176,16 @@ async fn delete_start(state: AppState, start_id: Path<Id>) -> Result<Redirect> {
 
 #[axum::debug_handler(state = app_state::State)]
 async fn render_edit_start(state: AppState, start_id: Path<Id>) -> Result<Html<String>> {
-    let start: EditStartData = todo!("Load all data to edit a given start");
+    let start = state
+        .with_connection(move |conn| {
+            starts::table
+                .find(start_id.0)
+                .select(EditStartData::as_select())
+                .first(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("Start with id {} not found", start_id.0)))?;
     state.render_template(
         "edit_start.html",
         StartFormData {
@@ -153,7 +204,16 @@ async fn update_start(
     data: Form<StartInputData>,
 ) -> Result<Redirect> {
     let base_url = state.base_url();
-    let race_id: Id = todo!("Update the given start and return the id of the relevant race");
+    let race_id = state
+        .with_connection(move |conn| {
+            diesel::update(starts::table.find(start_id.0))
+                .set(data.0)
+                .returning(starts::race_id)
+                .get_result::<Id>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("No start with id {} found", start_id.0)))?;
     Ok(Redirect::to(&format!(
         "{base_url}/admin/races/{}/starts.html",
         race_id

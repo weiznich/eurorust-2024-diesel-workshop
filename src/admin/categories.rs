@@ -1,10 +1,14 @@
 //! Admin page setup for categories
 use crate::app_state::{self, AppState};
+use crate::database::schema::{categories, participants, starts};
 use crate::database::Id;
-use crate::errors::Result;
+use crate::errors::{Error, Result};
 use axum::extract::Path;
 use axum::response::{Html, Redirect};
 use axum::{Form, Router};
+use diesel::dsl;
+use diesel::prelude::*;
+use diesel::sqlite::Sqlite;
 use serde::{Deserialize, Serialize};
 
 pub(crate) fn routes() -> Router<app_state::State> {
@@ -41,19 +45,32 @@ struct ListCategoiesData {
     categories: Vec<CategoryData>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Selectable, Queryable)]
+#[diesel(table_name = categories)]
+#[diesel(check_for_backend(Sqlite))]
 struct CategoryData {
     id: Id,
     label: String,
     from_age: i32,
     to_age: i32,
     male: bool,
+    #[diesel(select_expression = dsl::count(participants::id.nullable()))]
     participant_count: i64,
 }
 
 #[axum::debug_handler(state = app_state::State)]
 async fn list_categories_per_start(state: AppState, start_id: Path<Id>) -> Result<Html<String>> {
-    let categories = todo!("list categories for start here");
+    let categories = state
+        .with_connection(move |conn| {
+            categories::table
+                .filter(categories::start_id.eq(start_id.0))
+                .left_join(participants::table)
+                .group_by(categories::id)
+                .select(CategoryData::as_select())
+                .order_by(categories::from_age)
+                .load(conn)
+        })
+        .await?;
 
     state.render_template(
         "admin_category_list.html",
@@ -67,7 +84,15 @@ async fn list_categories_per_start(state: AppState, start_id: Path<Id>) -> Resul
 #[axum::debug_handler(state = app_state::State)]
 async fn delete_category(state: AppState, category_id: Path<Id>) -> Result<Redirect> {
     let base_url = state.base_url();
-    let start_id: Id = todo!();
+    let start_id = state
+        .with_connection(move |conn| {
+            diesel::delete(categories::table.find(category_id.0))
+                .returning(categories::start_id)
+                .get_result::<Id>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("No category with id {} found", category_id.0)))?;
 
     Ok(Redirect::to(&format!(
         "{base_url}/admin/starts/{}/categories.html",
@@ -75,7 +100,9 @@ async fn delete_category(state: AppState, category_id: Path<Id>) -> Result<Redir
     )))
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Queryable, Selectable)]
+#[diesel(table_name = categories)]
+#[diesel(check_for_backend(Sqlite))]
 struct EditCategoryData {
     label: String,
     from_age: i32,
@@ -92,7 +119,8 @@ struct CategoryFormData {
     title: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Insertable, AsChangeset)]
+#[diesel(table_name = categories)]
 struct CategoryFormInputData {
     label: String,
     from_age: i32,
@@ -102,7 +130,16 @@ struct CategoryFormInputData {
 
 #[axum::debug_handler(state = app_state::State)]
 async fn render_create_category(state: AppState, start_id: Path<Id>) -> Result<Html<String>> {
-    todo!("Load start here to verify it exists");
+    state
+        .with_connection(move |conn| {
+            starts::table
+                .find(start_id.0)
+                .select(starts::id)
+                .get_result::<Id>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("Start with id {} not found", start_id.0)))?;
 
     state.render_template(
         "edit_category.html",
@@ -122,7 +159,13 @@ async fn create_category(
     data: Form<CategoryFormInputData>,
 ) -> Result<Redirect> {
     let base_url = state.base_url();
-    todo!("Insert data here");
+    state
+        .with_connection(move |conn| {
+            diesel::insert_into(categories::table)
+                .values((data.0, categories::start_id.eq(start_id.0)))
+                .execute(conn)
+        })
+        .await?;
 
     Ok(Redirect::to(&format!(
         "{base_url}/admin/starts/{}/categories.html",
@@ -132,7 +175,16 @@ async fn create_category(
 
 #[axum::debug_handler(state = app_state::State)]
 async fn render_edit_category(state: AppState, category_id: Path<Id>) -> Result<Html<String>> {
-    let category: EditCategoryData = todo!("Get category data here");
+    let category = state
+        .with_connection(move |conn| {
+            categories::table
+                .find(category_id.0)
+                .select(EditCategoryData::as_select())
+                .first(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("Category with id {} not found", category_id.0)))?;
 
     state.render_template(
         "edit_category.html",
@@ -152,7 +204,16 @@ async fn update_category(
     data: Form<CategoryFormInputData>,
 ) -> Result<Redirect> {
     let base_url = state.base_url();
-    let start_id: Id = todo!("Verify that start exists here");
+    let start_id = state
+        .with_connection(move |conn| {
+            diesel::update(categories::table.find(category_id.0))
+                .set(data.0)
+                .returning(categories::start_id)
+                .get_result::<Id>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("Category with id {} not found", category_id.0)))?;
     Ok(Redirect::to(&format!(
         "{base_url}/admin/starts/{}/categories.html",
         start_id

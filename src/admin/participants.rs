@@ -1,7 +1,8 @@
 //! Admin page setup for participants
 use crate::app_state::{self, AppState};
 use crate::database::schema::{
-    categories, participants, participants_in_special_category, races, special_categories, starts,
+    categories, competitions, participants, participants_in_special_category, races,
+    special_categories, starts,
 };
 use crate::database::Id;
 use crate::errors::{Error, Result};
@@ -60,7 +61,8 @@ pub fn routes() -> Router<app_state::State> {
         .nest("/participants", participants_routes)
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Queryable, Selectable, Serialize, Debug)]
+#[diesel(table_name = participants)]
 pub struct Participant {
     pub id: Id,
     last_name: String,
@@ -68,7 +70,9 @@ pub struct Participant {
     club: Option<String>,
     birth_year: i32,
     consent_agb: bool,
+    #[diesel(select_expression = categories::label)]
     category: String,
+    #[diesel(select_expression = races::name)]
     race: String,
 }
 
@@ -85,7 +89,16 @@ async fn list_participants_for_competition(
     state: AppState,
     comp_id: Path<Id>,
 ) -> Result<Html<String>> {
-    let competition_name: String = todo!("Get the competition name here");
+    let competition_name = state
+        .with_connection(move |conn| {
+            competitions::table
+                .find(comp_id.0)
+                .select(competitions::name)
+                .first(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("No competition with id {} found", comp_id.0)))?;
 
     list_participants_for_filter(
         state,
@@ -99,7 +112,17 @@ async fn list_participants_for_competition(
 
 #[axum::debug_handler(state = app_state::State)]
 async fn list_participants_for_race(state: AppState, race_id: Path<Id>) -> Result<Html<String>> {
-    let (competition_id, race_name): (Id, String) = todo!("Load the competition_id and race_name");
+    let (competition_id, race_name) = state
+        .with_connection(move |conn| {
+            races::table
+                .find(race_id.0)
+                .select((races::competition_id, races::name))
+                .first(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("No race with id {} found", race_id.0)))?;
+
     list_participants_for_filter(
         state,
         races::id.eq(race_id.0),
@@ -112,8 +135,17 @@ async fn list_participants_for_race(state: AppState, race_id: Path<Id>) -> Resul
 
 #[axum::debug_handler(state = app_state::State)]
 async fn list_participants_for_start(state: AppState, start_id: Path<Id>) -> Result<Html<String>> {
-    let (competition_id, start_name): (Id, String) =
-        todo!("Load the competition_id and the start name");
+    let (competition_id, start_name) = state
+        .with_connection(move |conn| {
+            races::table
+                .inner_join(starts::table)
+                .filter(starts::id.eq(start_id.0))
+                .select((races::competition_id, starts::name))
+                .first(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("No start with id {} found", start_id.0)))?;
 
     list_participants_for_filter(
         state,
@@ -130,8 +162,17 @@ async fn list_participants_for_category(
     state: AppState,
     category_id: Path<Id>,
 ) -> Result<Html<String>> {
-    let (competition_id, race_name, category_label): (Id, String, String) =
-        todo!("Load the competition id, race_name and category label");
+    let (competition_id, race_name, category_label) = state
+        .with_connection(move |conn| {
+            races::table
+                .inner_join(starts::table.inner_join(categories::table))
+                .filter(categories::id.eq(category_id.0))
+                .select((races::competition_id, races::name, categories::label))
+                .first::<(Id, String, String)>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| Error::NotFound(format!("No category with id {} found", category_id.0)))?;
 
     list_participants_for_filter(
         state,
@@ -148,8 +189,22 @@ async fn list_participants_for_special_categories(
     state: AppState,
     special_id: Path<Id>,
 ) -> Result<Html<String>> {
-    let (competition_id, special_label): (Id, String) =
-        todo!("Load the competition id and the special category label");
+    let (competition_id, special_label) = state
+        .with_connection(move |conn| {
+            special_categories::table
+                .inner_join(races::table)
+                .filter(special_categories::id.eq(special_id.0))
+                .select((races::competition_id, special_categories::short_name))
+                .first::<(Id, String)>(conn)
+                .optional()
+        })
+        .await?
+        .ok_or_else(|| {
+            Error::NotFound(format!(
+                "No special category with id {} found",
+                special_id.0
+            ))
+        })?;
 
     list_participants_for_filter(
         state,
@@ -187,7 +242,16 @@ where
         + 'static,
     F::IsAggregate: MixedAggregates<is_aggregate::No, Output = is_aggregate::No>,
 {
-    let participants: Vec<Participant> = todo!("Load participants");
+    let participants = state
+        .with_connection(move |conn| {
+            participants::table
+                .inner_join(categories::table.inner_join(starts::table.inner_join(races::table)))
+                .filter(filter)
+                .select(Participant::as_select())
+                .order_by(participants::birth_year)
+                .load(conn)
+        })
+        .await?;
     state.render_template(
         "admin_participant_list.html",
         ParticipantListData {
@@ -211,7 +275,11 @@ async fn delete_participant(
     query: Query<RedirectInfo>,
 ) -> Result<Redirect> {
     let base_url = state.base_url();
-    let count: usize = todo!("Delete participant");
+    let count = state
+        .with_connection(move |conn| {
+            diesel::delete(participants::table.find(participant_id.0)).execute(conn)
+        })
+        .await?;
     if count != 1 {
         Err(Error::NotFound(format!(
             "Participant with id {} not found",
@@ -229,7 +297,34 @@ async fn load_participant_by_id(
     state: &AppState,
     participant_id: Id,
 ) -> Result<(ParticipantWithSpecialCategories, Id)> {
-    todo!("Load participant with related data")
+    state
+        .with_connection(move |conn| {
+            let res = participants::table
+                .find(participant_id)
+                .inner_join(categories::table.inner_join(starts::table.inner_join(races::table)))
+                .select((ParticipantForForm::as_select(), races::competition_id))
+                .first::<(ParticipantForForm, Id)>(conn)
+                .optional()?;
+            if let Some((participant, competition_id)) = res {
+                let special_categories = participants_in_special_category::table
+                    .filter(participants_in_special_category::participant_id.eq(participant_id))
+                    .select(participants_in_special_category::special_category_id)
+                    .load::<Id>(conn)?;
+                Ok(Some((
+                    ParticipantWithSpecialCategories {
+                        participant,
+                        special_categories,
+                    },
+                    competition_id,
+                )))
+            } else {
+                Ok(None)
+            }
+        })
+        .await?
+        .ok_or_else(|| {
+            Error::NotFound(format!("Participant with id {} not found", participant_id,))
+        })
 }
 
 #[axum::debug_handler(state = app_state::State)]
@@ -286,19 +381,50 @@ async fn render_add_participant(
         }
         ["races", _, _] => {
             participant.participant.race_id = Some(id);
-            competition_id = todo!("Load the competition id based on the race_id");
+            competition_id = state
+                .with_connection(move |conn| {
+                    races::table
+                        .find(id)
+                        .select(races::competition_id)
+                        .first(conn)
+                        .optional()
+                })
+                .await?
+                .ok_or_else(|| Error::NotFound(format!("No race with id {} found", id)))?;
         }
         ["starts", _, _] => {
-            let (comp_id, race_id): (Id, Id) =
-                todo!("Load competition and race id based on the start id");
+            let (comp_id, race_id) = state
+                .with_connection(move |conn| {
+                    starts::table
+                        .find(id)
+                        .inner_join(races::table)
+                        .select((races::competition_id, races::id))
+                        .first(conn)
+                        .optional()
+                })
+                .await?
+                .ok_or_else(|| Error::NotFound(format!("No starts with id {} found", id)))?;
             competition_id = comp_id;
             participant.participant.race_id = Some(race_id);
         }
         ["categories", _, _] => {
             participant.participant.category_id = Some(id);
-            let (comp_id, race_id, from_age, male): (Id, Id, i32, bool) = todo!(
-                "Load competition id, race_id, minimal age and gender based on the category id"
-            );
+            let (comp_id, race_id, from_age, male) = state
+                .with_connection(move |conn| {
+                    categories::table
+                        .find(id)
+                        .inner_join(starts::table.inner_join(races::table))
+                        .select((
+                            races::competition_id,
+                            races::id,
+                            categories::from_age,
+                            categories::male,
+                        ))
+                        .first::<(Id, Id, i32, bool)>(conn)
+                        .optional()
+                })
+                .await?
+                .ok_or_else(|| Error::NotFound(format!("No categories with id {} found", id)))?;
             let year = time::OffsetDateTime::now_utc().year();
             competition_id = comp_id;
             participant.participant.race_id = Some(race_id);
@@ -306,8 +432,19 @@ async fn render_add_participant(
             participant.participant.male = male;
         }
         ["special_categories", _, _] => {
-            let (race_id, comp_id) =
-                todo!("Load competition_id and race_id based on the special category id");
+            let (race_id, comp_id) = state
+                .with_connection(move |conn| {
+                    special_categories::table
+                        .inner_join(races::table)
+                        .filter(special_categories::id.eq(id))
+                        .select((races::id, races::competition_id))
+                        .first(conn)
+                        .optional()
+                })
+                .await?
+                .ok_or_else(|| {
+                    Error::NotFound(format!("Special category with id {} not found", id))
+                })?;
             participant.participant.race_id = Some(race_id);
             competition_id = comp_id;
             participant.special_categories.push(id);
