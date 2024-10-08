@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %} {{ translate("registration_list") }} {{ competition_info.name }} {% endblock %}
+
+{% block body %}
+<a href="{{ base_url }}/{{ competition_info.id }}/registration.html">
+  {{ translate("to_registration") }}
+</a>
+{% for race in race_map %}
+<h3>{{ race.race_name }}</h3>
+{% if race.participants %}
+<table>
+  <tr>
+    <th>{{ translate("first_name") }}</th>
+    <th>{{ translate("last_name") }}</th>
+    <th>{{ translate("club") }}</th>
+    <th>{{ translate("category") }}</th>
+    <th>{{ translate("birth_year") }}</th>
+    {% for c in race.special_categories %}
+    <th><abbr title="{{c.name}}">{{c.short_name}}</abbr></th>
+    {% endfor %}
+    <th>{{ translate( "start_time") }}</th>
+  </tr>
+  {% for p in race.participants %}
+  <tr>
+    <td>{{p.first_name}}</td>
+    <td>{{p.last_name}}</td>
+    <td>{{p.club}}</td>
+    <td>{{p.class}}</td>
+    <td>{{p.birth_year}}</td>
+    {% for c in race.special_categories %}
+    <td>
+      {% if p.special_categories[loop.index0] %}
+          {{ translate("yes") }}
+      {% else %}
+          {{ translate("no") }}
+      {% endif %}
+    </td>
+    {% endfor %}
+    <td>{{p.start_time|format_date}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>{{ translate("no_registered_participants_yet") }}</p>
+{% endif %}
+{% endfor %}
+    </main>
+{% endblock %}

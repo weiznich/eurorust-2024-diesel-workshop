@@ -1,0 +1,17 @@
+--- /tmp/schema.rs	2024-09-13 11:12:37.514049877 +0200
++++ src/database/schema.rs	2024-09-13 11:12:42.988045918 +0200
+@@ -50,13 +50,13 @@
+ }
+ 
+ diesel::table! {
+     session_records (id) {
+         id -> Binary,
+         data -> Text,
+-        expiry_date -> Text,
++        expiry_date -> TimestamptzSqlite,
+     }
+ }
+ 
+ diesel::table! {
+     special_categories (id) {
+         id -> Binary,

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<form action="{{ base_url }}/admin/{{ target_url }}" method="post">
+    <label for="name"><b>{{ translate("name") }}:</b></label>
+    <input type="text" id="name" name="name" {% if special_category %} value="{{ special_category.name }}" {% endif %} required \>
+
+    <label for="short_name"><b>{{ translate("short_name") }}:</b></label>
+    <input type="text" id="short_name" name="short_name" {% if special_category %} value="{{ special_category.short_name }}" {% endif %} required \>
+
+    <input type="submit" value="{{ translate("submit") }}" />
+</form>
+
+{% endblock %}

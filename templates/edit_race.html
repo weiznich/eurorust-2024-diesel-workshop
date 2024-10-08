@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<form action="{{ base_url }}/admin/{{ target_url }}" method="post">
+    <label for="name"><b>{{ translate("name") }}:</b></label>
+    <input type="text" id="name" name="name" {% if race %} value="{{ race.name }}" {% endif %} required \>
+
+    <input type="submit" value="{{ translate("submit") }}" />
+</form>
+
+{% endblock %}

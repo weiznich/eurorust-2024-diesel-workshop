@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block head_title %} {{ head_title }} {% endblock %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+<form action="{{ base_url }}/{{ target_uri }}" method="post">
+  <label for="lastname"><b>{{ translate("last_name") }}:</b></label>
+  <input
+      type="text"
+      id="lastname"
+      name="lastname"
+      {% if participant %} value="{{ participant.last_name }}" {% endif %}
+      required />
+
+  <label for="firstname"><b>{{ translate("first_name") }}:</b></label>
+  <input
+      type="text"
+      id="firstname"
+      name="firstname"
+      {% if participant %} value="{{ participant.first_name }}" {% endif %}
+      required />
+
+  <label for="age"><b>{{ translate("birth_year") }}:</b></label>
+  <input
+      type="number"
+      min="{{ max_age }}"
+      max="{{ min_age }}"
+      id="age"
+      name="age"
+      {% if participant %} {% if participant.birth_year %} value="{{ participant.birth_year }}" {% endif %} {% endif %}
+      required
+  />
+
+  <label for="male"><b>{{ translate("male") }}:</b></label>
+  <input
+      type="radio"
+      id="male"
+      name="male"
+      value="true"
+      {% if participant %} {% if participant.male %} checked {% endif %} {% endif %}
+      required />
+  <br />
+
+  <label for="femal"><b>{{ translate("femal") }}:</b></label>
+  <input
+      type="radio"
+      id="femal"
+      name="male"
+      value="false"
+      {% if participant %} {% if not participant.male %} checked {% endif %} {% endif %}
+  /> <br />
+
+  <label for="club"><b>{{ translate("club") }}:</b></label>
+  <input
+      type="text"
+      id="club"
+      name="club"
+      {% if participant %} {% if participant.club %} value="{{ participant.club }}" {% endif %} {% endif %}
+  />
+
+  <label for="race"><b>{{ translate("distance") }}:</b></label>
+  <select name="race" id="race" style="width: 270px">
+    {% for r in race_data %}
+    <option
+      value="{{ r.race.id }}"
+      {% if participant %} {% if participant.race_id == r.race.id %} selected="selected" {% endif %} {% endif %}
+    >
+      {{ r.race.name }}
+    </option>
+    {% endfor %}
+  </select>
+  {% for r in race_data %}
+  {% if participant %}
+      {% set show = participant.race_id == r.race.id %}
+  {% else %}
+      {% set show = loop.first %}
+  {% endif %}
+  {%for c in r.special_categories %}
+  <label
+    for="{{ c.id }}"
+    id="{{ c.id }}-label"
+    {% if not show %} style="display: none" {% endif  %}
+  >
+    <b>{{ translate("registration_for_special")  }} {{ c.name }}?</b>
+  </label>
+  <input
+    type="checkbox"
+    id="{{ c.id }}"
+    name="{{ c.id }}"
+    {% if not show %} style="display: none" {% endif %}
+    {% if participant %} {% if c.id in participant.special_categories %} checked {% endif %} {% endif %}
+  />
+  <br />
+  {% endfor %} {% endfor %}
+
+  <label for="consent">
+    <b>
+      <a href="{{ event.announcement }}"> {{ translate("consent_agb") }}: </a>
+    </b>
+  </label>
+  <input
+      type="checkbox"
+      id="consent"
+      name="consent"
+      {% if participant %} {% if participant.consent_agb %} checked {% endif %} {% endif %}
+      required />
+
+  <br />
+  <input type="submit" value="{{ translate("submit") }}" />
+</form>
+{% endblock %} {% block after_body %}
+<script>
+  const age = document.getElementById("age");
+  const race = document.getElementById("race");
+  const race_age_list = [
+      {% for r in race_data %}
+      {
+          min_age: {{ r.min_age }},
+          max_age: {{ r.max_age }},
+          name: "{{ r.race.name }}",
+          id: "{{r.race.id }}",
+          special_categories: [
+              {% for c in r.special_categories %}
+              "{{ c.id }}",
+              {% endfor %}
+          ]
+      },
+      {% endfor %}
+  ];
+
+  age.addEventListener("input", (event) => {
+      let i, L = race.options.length - 1;
+      for(i = L; i >= 0; i--) {
+          race.remove(i);
+      }
+      let value = parseInt(age.value);
+      for(idx in race_age_list) {
+          let v = race_age_list[idx];
+          if(v.min_age >= value && v.max_age <= value) {
+              race.add(new Option(v.name, v.id));
+          }
+      }
+      if(race.options.length === 0) {
+          race.add(new Option("{{ translate("invalid_age") }}"));
+          race.disabled = true;
+          race.validity.valid = false;
+      } else {
+          race.disabled = false;
+          race.validity.valid = true;
+      }
+  });
+  race.addEventListener("input", (event) => {
+      let value = race.value;
+      for(idx in race_age_list) {
+          let r = race_age_list[idx];
+          for(idx in r.special_categories) {
+              let c = r.special_categories[idx];
+              let label = document.getElementById(c + "-label");
+              let checkbox = document.getElementById(c);
+              if( r.id === value) {
+                  label.style.display = "block";
+                  checkbox.style.display = "block";
+              } else {
+                  label.style.display = "none";
+                  checkbox.style.display = "none";
+                  checkbox.checked = false;
+              }
+          }
+      }
+  });
+</script>
+{% endblock %}

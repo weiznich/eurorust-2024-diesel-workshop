@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<form action="{{ base_url }}/admin/{{ target_url }}" method="post">
+    <label for="name"><b>{{ translate("name") }}:</b></label>
+    <input type="text" id="name" name="label" {% if category %} value="{{ category.label }}" {% endif %} required \>
+
+    <label for="from_age"><b>{{ translate("min_age") }}</b></label>
+    <input
+        type="number" min="0" max="120" id="from_age" name="from_age"
+        {% if category %} value="{{ category.from_age }}" {% endif %} required />
+
+    <label for="to_age"><b>{{ translate("max_age") }}</b></label>
+    <input
+        type="number" min="0" max="120" id="to_age" name="to_age"
+        {% if category %} value="{{ category.to_age }}" {% endif %} required />
+
+    <label for="male"><b>{{ translate("male") }}:</b></label>
+    <input
+        type="radio"
+        id="male"
+        name="male"
+        value="true"
+        {% if category %} {% if category.male %} checked {% endif %} {% endif %}
+        required />
+    <br />
+
+    <label for="femal"><b>{{ translate("femal") }}:</b></label>
+    <input
+        type="radio"
+        id="femal"
+        name="male"
+        value="false"
+        {% if category %} {% if not category.male %} checked {% endif %} {% endif %}/>
+    <br />
+
+    <input type="submit" value="{{ translate("submit") }}" />
+</form>
+
+{% endblock %}

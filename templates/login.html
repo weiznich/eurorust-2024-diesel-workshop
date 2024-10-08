@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %} {{ translate("login") }} {% endblock %}
+
+{% block body %}
+<form action="{{ base_url }}/admin/login" method="post">
+    <label for="username"><b>{{ translate("username") }}:</b></label>
+    <input type="text" id="username" name="name" required/>
+
+    <label for="password"><b>{{ translate("password") }}:</b></label>
+    <input type="password" id="password" name="password" required/>
+
+    <br />
+    <input type="submit" value="{{ translate("login") }}" />
+</form>
+{% endblock %}

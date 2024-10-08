@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<form action="{{ base_url }}/admin/{{ target_url }}" method="post">
+    <label for="name"><b>{{ translate("name") }}:</b></label>
+    <input type="text" id="name" name="name" {% if competition %} value="{{ competition.name }}" {% endif %} required \>
+
+    <label for="date"><b>{{ translate("date") }}:</b></label>
+    <input type="date" id="date" name="date" {% if competition %} value="{{ competition.date }}" {% endif %} required \>
+
+    <label for="announcement"><b>{{ translate("announcement_link") }}:</b></label>
+    <input type="text" id="announcement" name="announcement" {% if competition %} value="{{ competition.announcement }}" {% endif %} required \>
+
+    <label for="location"><b>{{ translate("location") }}:</b></label>
+    <input type="text" id="location" name="location" {% if competition %} value="{{ competition.location }}" {% endif %} required \>
+
+    <label for="description"><b>{{ translate("description") }}:</b></label>
+    <textarea id="description" name="description" required>{% if competition %} {{ competition.description }} {% endif %}</textarea>
+
+    <input type="submit" value="{{ translate("submit") }}" />
+</form>
+
+{% endblock %}

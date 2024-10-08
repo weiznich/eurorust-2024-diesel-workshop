@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+
+<form action="{{ base_url }}/admin/{{ target_url }}" method="post">
+    <label for="name"><b>{{ translate("name") }}:</b></label>
+    <input type="text" id="name" name="name" {% if start %} value="{{ start.name }}" {% endif %} required \>
+
+    <label for="time"><b>{{ translate("start_time") }}:</b></label>
+    <input type="datetime-local" id="time" name="time" {% if start %} value="{{ start.time | format_timestamp }}" {% endif %} required \>
+
+    <input type="submit" value="{{ translate("submit") }}" />
+</form>
+
+{% endblock %}

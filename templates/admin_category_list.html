@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %} {{ translate("categories") }} {% endblock %}
+
+{% block body %}
+
+<a href="{{ base_url }}/admin/competitions/index.html"> {{ translate("competitions") }} </a>
+
+<br/>
+<a href="{{ base_url }}/admin/starts/{{ start_id }}/create_category.html">{{ translate("new_category") }}</a>
+
+<table>
+  <tr>
+    <th>{{ translate("id") }}</th>
+    <th>{{ translate("name") }}</th>
+    <th>{{ translate("min_age") }}</th>
+    <th>{{ translate("max_age") }}</th>
+    <th>{{ translate("male") }}</th>
+    <th>{{ translate("participant") }}</th>
+    <th>{{ translate("delete") }}?</th>
+    <th>{{ translate("edit") }}?</th>
+  </tr>
+  {% for c in categories %}
+  <tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.label }}</td>
+    <td>{{ c.from_age }}</td>
+    <td>{{ c.to_age }}</td>
+    <td>{{ c.male }}</td>
+    <td>
+      <a href="{{ base_url }}/admin/categories/{{ c.id }}/participants.html">
+        {{ c.participant_count }}
+      </a>
+    </td>
+    <td>
+      <a href="{{ base_url }}/admin/categories/{{ c.id }}/delete.html">
+        {{ translate("delete") }}
+      </a>
+    </td>
+    <td>
+        <a href="{{ base_url }}/admin/categories/{{ c.id }}/edit.html">
+          {{ translate("edit") }}
+        </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

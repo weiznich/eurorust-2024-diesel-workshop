@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %} {{ translate("participants") }} {{ specifier }} {% endblock %}
+
+{% block body %}
+
+<a href="{{ base_url }}/admin/competitions/index.html">
+    {{ translate("competitions") }}
+</a>
+</br>
+<a href="{{ base_url }}/admin/participants/add_participant.html?redirect_to={{ redirect_to }}">
+    {{ translate("new_participant") }}
+</a>
+
+<table>
+    <tr>
+        <th> {{ translate("id") }} </th>
+        <th> {{ translate("first_name") }} </th>
+        <th> {{ translate("last_name") }} </th>
+        <th> {{ translate("club") }} </th>
+        <th> {{ translate("birth_year") }} </th>
+        <th> {{ translate("agb") }} </th>
+        <th> {{ translate("category") }}</th>
+        <th> {{ translate("race") }} </th>
+        <th> {{ translate("delete") }}? </th>
+        <th> {{ translate("edit") }}? </th>
+    </tr>
+{% for p in participants %}
+    <tr>
+        <td> {{ p.id }} </td>
+        <td> {{ p.first_name }} </td>
+        <td> {{ p.last_name }} </td>
+        <td> {{ p.club }} </td>
+        <td> {{ p.birth_year }} </td>
+        <td> {{ p.consent_agb }} </td>
+        <td> {{ p.category }} </td>
+        <td> {{ p.race }} </td>
+        <td>
+            <a href="{{ base_url }}/admin/participants/{{ p.id }}/delete.html?redirect_to={{ redirect_to }}" >
+                {{ translate("delete") }}
+            </a>
+        </td>
+        <td>
+            <a href="{{ base_url }}/admin/participants/{{ p.id }}/edit.html?redirect_to={{ redirect_to }}" >
+                {{ translate("edit") }}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

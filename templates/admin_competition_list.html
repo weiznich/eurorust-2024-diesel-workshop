@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %} {{ translate("competitions") }} {% endblock %}
+
+{% block body %}
+
+<a href="{{ base_url }}/admin/competitions/create.html">
+  {{ translate("new_competition") }}
+</a>
+
+<table>
+  <tr>
+    <th>{{ translate("id") }}</th>
+    <th>{{ translate("name") }}</th>
+    <th>{{ translate("date") }}</th>
+    <th>{{ translate("location") }}</th>
+    <th>{{ translate("races") }}</th>
+    <th>{{ translate("participants") }}</th>
+    <th>{{ translate("delete") }}?</th>
+    <th>{{ translate("edit") }}?</th>
+  </tr>
+  {% for c in competitions %}
+  <tr>
+    <td>{{ c.id }}</td>
+    <td>{{ c.name }}</td>
+    <td>{{ c.date }}</td>
+    <td>{{ c.location }}</td>
+    <td>
+      <a href="{{ base_url }}/admin/competitions/{{ c.id }}/races.html">
+        {{ c.race_count }}
+      </a>
+    </td>
+    <td>
+      <a href="{{ base_url }}/admin/competitions/{{ c.id }}/participants.html">
+        {{ c.participant_count }}
+      </a>
+    </td>
+    <td>
+      <a href="{{ base_url }}/admin/competitions/{{ c.id }}/delete.html">
+        {{ translate("delete") }}
+      </a>
+    </td>
+    <td>
+      <a href="{{ base_url }}/admin/competitions/{{ c.id }}/edit.html">
+        {{ translate("edit") }}
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
