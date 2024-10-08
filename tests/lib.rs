@@ -5,6 +5,9 @@ use race_timing::service_config::Config;
 use std::path::PathBuf;
 use tower::ServiceExt;
 
+mod competition_list;
+mod registration;
+
 // provide a server config suitable for testing
 //
 // the `test_data` argument indicates whether we want to include test data
