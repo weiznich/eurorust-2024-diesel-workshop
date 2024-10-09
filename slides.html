@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Diesel Workshop</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/serif.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Diesel Workshop</h1>
+</section>
+
+<section>
+<section id="introduction" class="title-slide slide level2">
+<h2>Introduction</h2>
+
+</section>
+<section id="who-i-am" class="slide level3">
+<h3>Who I am</h3>
+<ul>
+<li>I’m Georg (weiznich on Github)</li>
+<li>Diesel contributor since 8 years and one of the core team members of
+diesel since 5 years</li>
+<li>I’m writing Rust code for 10 years now, including contributions to
+diesel, the rust compiler and authoring one RFC</li>
+<li>Working at GiGa Infosystems GmbH on a database system for geologic
+subsurface models</li>
+</ul>
+</section>
+<section id="content-of-the-workshop" class="slide level3">
+<h3>Content of the workshop</h3>
+<ul>
+<li>Diesel Basics</li>
+<li>Testing with Diesel</li>
+<li>Extending Diesel</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Each topic will consist of me talking about stuff</li>
+<li>Afterwards there will be a practical exercise</li>
+<li>Will share the workshop material + solutions to the exercises after
+the workshop</li>
+<li>If there are question: Just indicate that you have a question and
+ask them right away (after I stopped speaking)</li>
+</ul>
+</aside>
+</section>
+<section id="timeline" class="slide level3">
+<h3>Timeline</h3>
+<p>Before Lunch: * Diesel Basics</p>
+<p>After Lunch: * Testing with Diesel * Extending Diesel</p>
+<aside class="notes">
+<ul>
+<li>we might take another short break between the afternoon blocks,
+depending on your needs?</li>
+</ul>
+</aside>
+</section>
+<section id="about-you" class="slide level3">
+<h3>About you</h3>
+<ul>
+<li>Rust experience?</li>
+<li>Database experience?</li>
+<li>Diesel experience?</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>did not use it yet, beginner, knowledge, using x professionally</li>
+<li>other ORM’s?</li>
+<li>Postgres, Sqlite, Mysql</li>
+</ul>
+</aside>
+</section></section>
+<section>
+<section id="diesel-basics" class="title-slide slide level2">
+<h2>Diesel Basics</h2>
+
+</section>
+<section id="what-is-diesel" class="slide level3">
+<h3>What is Diesel</h3>
+<ul>
+<li>Diesel is a query builder and ORM for Rust</li>
+<li>Exists since 2015</li>
+<li>Focus on performance and safety</li>
+<li>Checks your SQL at compile time</li>
+<li>Expressive and extensible</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>More query builder with some optional ORM features</li>
+<li>Checks even “dynamic” queries at compile time</li>
+<li>Influenced development of various rust features:
+<ul>
+<li>derive macros</li>
+<li>coherence rules (orphan rule)</li>
+<li>recently diagnostic improvements</li>
+</ul></li>
+<li>If it compiles your queries almost always works</li>
+<li>possible to extend almost everything in diesel, will see examples
+for this later in the workshop</li>
+</ul>
+</aside>
+</section>
+<section id="what-is-diesel-1" class="slide level3">
+<h3>What is Diesel</h3>
+<ul>
+<li>Diesel consists of different parts:
+<ul>
+<li>Core <code>diesel</code> crate</li>
+<li>A CLI tool <code>diesel-cli</code></li>
+<li>Migration crate <code>diesel-migration</code></li>
+<li>(Several internal helper crates for derives, etc)</li>
+</ul></li>
+<li>Notable extension crates
+<ul>
+<li><code>diesel-full-text-search</code></li>
+<li><code>diesel-dynamic-schema</code></li>
+<li><code>diesel-async</code></li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li><code>diesel-dynamic-schema</code> -&gt; for situations where you
+don’t know the schema at compile time</li>
+<li><code>diesel-full-text-search</code> -&gt; example crate for showing
+how to provide support for a postgres extension</li>
+<li><code>diesel-async</code> -&gt; Support for async database
+connections</li>
+</ul>
+</aside>
+</section>
+<section id="what-is-provided-by-diesel" class="slide level3">
+<h3>What is provided by Diesel</h3>
+<ul>
+<li>Database connection abstractions</li>
+<li>Database connections for PostgreSQL, MySQL and SQLite</li>
+<li>A domain specific language (DSL) to describe your database
+schema</li>
+<li>A DSL to write your queries</li>
+<li>Various proc-macros to map data from/to queries</li>
+<li>Basic ORM like functionality</li>
+<li>Tools to execute migrations</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Will see examples soon</li>
+<li>ORM like functionality is “optional”, you can use it but it’s not
+required</li>
+<li>Migrations allow to manage your database schema</li>
+</ul>
+</aside>
+</section>
+<section id="diesel-design-goals" class="slide level3">
+<h3>Diesel Design Goals</h3>
+<ul>
+<li>Check whatever is possible to check at compile time</li>
+<li>Do not hide database features/differences from the user</li>
+<li>Be extensible wherever possible</li>
+<li>Make type mapping flexible</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>We want to be really sure that code compiles == code is correct</li>
+<li>Hide differences only if user explicitly requests that -&gt; Then
+fall back to a common subset of features</li>
+<li>We do not want to restrict which database features you can use
+<ul>
+<li>For example we support DSL for most of the “advanced” JSON/JSONB
+operators for postgres</li>
+</ul></li>
+<li>Want to have your own types/backend/… -&gt; Sure no problem, just
+implement these traits</li>
+<li>No 1:1 mapping between database types and rust types, more like n:m.
+Example: Datetime in SQL, different time types in rust
+(chrono/time/jiff/…), might be stored as <code>Text</code> for
+sqlite</li>
+</ul>
+</aside>
+</section>
+<section id="diesel-limitations" class="slide level3">
+<h3>Diesel Limitations</h3>
+<ul>
+<li>Limited built-in DSL</li>
+<li>Strongly typed, restricts certain kinds of dynamic queries</li>
+<li>Favours explicit query building over implicit model based
+approach</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Talk about this later in detail, why this restrictions exists</li>
+<li>Limited DSL -&gt; can be extend, will be later shown</li>
+<li>Strongly typed -&gt; restricts dynamic queries
+<ul>
+<li>FROM clause needs to be known</li>
+<li>SELECT clause needs to be known</li>
+<li>GROUP BY clause needs to be known</li>
+<li>-&gt; Again workaround exist, will talk about them later</li>
+<li>Has impact on compile times/tooling</li>
+<li>Has impact on compile errors</li>
+</ul></li>
+</ul>
+</aside>
+</section>
+<section id="show-me-some-code" class="slide level3">
+<h3>Show me some code</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::table!</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    users <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        id <span class="op">-&gt;</span> Integer<span class="op">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        name <span class="op">-&gt;</span> Text<span class="op">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> load_usernames(conn<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> PgConnection) <span class="op">-&gt;</span> QueryResult<span class="op">&lt;</span><span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;&gt;</span> <span class="op">{</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="pp">users::</span>table<span class="op">.</span>select(<span class="pp">users::</span>name)<span class="op">.</span>load(conn)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Simple example</li>
+<li>Two relevant parts:
+<ul>
+<li>Schema definition, via <code>table!</code> macro</li>
+<li>functions using the schema to construct queries</li>
+</ul></li>
+<li>Diesel is mostly designed around queries, not models</li>
+<li>We will dive into the details soon</li>
+</ul>
+</aside>
+</section>
+<section id="creating-a-diesel-application" class="slide level3">
+<h3>Creating a Diesel Application</h3>
+<ol start="0" type="1">
+<li>Install <code>diesel_cli</code></li>
+<li>Setup the database using SQL migrations</li>
+<li>Create a Rust schema file from your database</li>
+<li>Write code that interacts with the database</li>
+</ol>
+<aside class="notes">
+<ul>
+<li>Step 1: Can be generated from your <code>table!</code> macro</li>
+<li>Step 1: Can be skipped for existing/externally managed
+databases</li>
+<li>Step 2: Generates the definition used by diesel compile time checks
+-&gt; Important to keep that up to date</li>
+</ul>
+</aside>
+</section>
+<section id="what-is-diesel-cli" class="slide level3">
+<h3>What is Diesel CLI</h3>
+<ul>
+<li>Helper tool for working on Diesel projects</li>
+<li>Allows:
+<ul>
+<li>To manage your database</li>
+<li>To manage your migrations</li>
+<li>To generate migrations based on your Rust schema and an existing
+database</li>
+<li>Generate Rust schema from databases</li>
+<li>Verify that the generated schema matches your database</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Manage database == create new database, drop database etc -&gt;
+usful for testing</li>
+<li>Migrations -&gt; Tool to update database schema to a new
+version</li>
+<li>Main motivation for SQL migrations:
+<ul>
+<li>It’s portable, you can easily move tools/languages/ if required</li>
+<li>Allows you to leverage advanced SQL concepts for data migration</li>
+</ul></li>
+<li>Also allows to run/undo/… migrations</li>
+<li>Generating migrations == essentially diff your database schema with
+what the rust side expects and generate a migration to get there
+<ul>
+<li>Limited, ambiguous problem</li>
+<li>We generate SQL, so that you can inspect and change the migration
+before applying</li>
+<li>Useful for “trivial” things like adding new table, etc</li>
+<li>Supports mostly adding/removing tables/columns</li>
+<li>Does not handle more complex things like indices, constraints
+(beside foreign keys)</li>
+<li>Expectation there: You know that better and can adjust the generated
+SQL easily</li>
+</ul></li>
+</ul>
+</aside>
+</section>
+<section id="the-table-macro" class="slide level3">
+<h3>The <code>table!</code> Macro</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::table!</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    users <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        id <span class="op">-&gt;</span> Integer<span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        name <span class="op">-&gt;</span> Text<span class="op">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Defines a representation of the database in your Rust code</li>
+<li>Generates a number of types</li>
+<li>Used for type checking + query building</li>
+</ul>
+</section>
+<section id="the-table-macro-1" class="slide level3">
+<h3>The <code>table!</code> Macro</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">mod</span> users <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">struct</span> table<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">mod</span> columns <span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">pub</span> <span class="kw">struct</span> id<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">pub</span> <span class="kw">struct</span> name<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">use</span> <span class="pp">columns::</span><span class="op">*;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">pub</span> <span class="kw">mod</span> dsl <span class="op">{</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="pp">::</span>table <span class="kw">as</span> users<span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span><span class="pp">::columns::</span><span class="op">*;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Contains zero sized structs that represent your table + columns</li>
+<li>Prefer qualified uses, e.g <code>users::id</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Simplified expansion of the generated code (skipped all traits, and
+some other stuff)</li>
+<li>These types are the entry point for query building</li>
+<li>The <code>dsl</code> module provides a short hand for wildcard
+imports -&gt; Only use those in function scope if only a single table is
+in place -&gt; Do not globally import these types, as that leads to name
+collisions</li>
+</ul>
+</aside>
+</section>
+<section id="select-statements" class="slide level3">
+<h3>Select Statements</h3>
+<ul>
+<li>Diesel provides a query DSL to construct statically known
+queries</li>
+<li>DSL maps literally to the generated SQL,
+e.g. <code>users::table.select(users::id)</code> maps to
+<code>SELECT id FROM users</code></li>
+<li>Documentation available via the <code>QueryDsl</code> trait</li>
+<li>Offers support for most select statement constructs</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Starting point is the schema DSL shown in the previous slide</li>
+<li>Query needs to be known statically, otherwise boxing is required
+(via <code>QueryDsl::into_boxed()</code>)</li>
+<li>Exceptions for literal mapping: Rust keywords like
+<code>WHERE</code> or <code>IN</code> (later for expressions)</li>
+</ul>
+</aside>
+</section>
+<section id="select-statements-1" class="slide level3">
+<h3>Select Statements</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>select((<span class="pp">users::</span>id<span class="op">,</span> <span class="pp">users::</span>name))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>filter(<span class="pp">users::</span>name<span class="op">.</span>like(<span class="st">&quot;%John%&quot;</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>order_by(<span class="pp">users::</span>id)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>limit(<span class="dv">42</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>offset(<span class="dv">24</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>RustTargetType<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Methods can be chained</li>
+<li>Only need to use these calls that you want</li>
+<li>Order of the methods is mostly irrelevant</li>
+<li>Exceptions:
+<ul>
+<li>Group by + Select -&gt; First group then select, required for better
+error messages for invalid selects</li>
+<li>Join + Select/Filter/Order -&gt; First join then
+select/filter/order</li>
+</ul></li>
+<li>Need to end with <code>load</code> (or similar method from
+<code>RunQueryDsl</code>) to execute the query</li>
+<li>Will look at result mapping first, talk about different parts of
+selects later</li>
+</ul>
+</aside>
+</section>
+<section id="query-execution" class="slide level3">
+<h3>Query Execution</h3>
+<ul>
+<li>Different ways to execute a query via <code>RunQueryDsl</code>:
+<ul>
+<li><code>load::&lt;U&gt;</code>/<code>get_results::&lt;U&gt;</code>:
+Returns a list of <code>U</code></li>
+<li><code>get_result::&lt;U&gt;</code>: Returns the first <code>U</code>
+ignores the rest</li>
+<li><code>first::&lt;U&gt;</code>: Returns the first <code>U</code>,
+attaches a LIMIT 1 clause to the executed query</li>
+<li><code>execute</code>: Returns the number of affected column</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Prefer <code>load</code> and <code>first</code> for select
+queries</li>
+<li>Use <code>execute</code> for insert/update/delete</li>
+<li>Use <code>get_result</code> for insert/update/delete with
+returning</li>
+</ul>
+</aside>
+</section>
+<section id="select-statements-result-mapping" class="slide level3">
+<h3>Select Statements (Result Mapping)</h3>
+<ul>
+<li>Diesel maps query results to Rust structs</li>
+<li>Mapping is performed by field order, <strong>not by
+name</strong></li>
+<li>Compile time checks ensure that you only use compatible types on the
+Rust side</li>
+<li>Default implementation exists for tuples</li>
+<li>Recommend to use structs that derive <code>Queryable</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>query results != tables, might contain columns from zero, one or
+more tables</li>
+<li>Field in query results might not have a name</li>
+<li>No mapping from Integer to String or similar allowed</li>
+<li>Checks also verify all fields are used</li>
+<li>Mismatch will cause compile time error</li>
+<li>Exception to using structs: Queries which results are reprocessed
+directly afterwards</li>
+<li>Generally: Prefer using structs especially if they already exists
+for other reasons (e.g. API’s …)</li>
+</ul>
+</aside>
+</section>
+<section id="result-mapping" class="slide level3">
+<h3>Result Mapping</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::table!</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    users <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        id <span class="op">-&gt;</span> Integer<span class="op">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        name <span class="op">-&gt;</span> Text<span class="op">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        age <span class="op">-&gt;</span> Integer<span class="op">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Table used in the next few examples</li>
+<li>Important thing to keep in mind: 3 columns</li>
+</ul>
+</aside>
+</section>
+<section id="result-mapping-1" class="slide level3">
+<h3>Result Mapping</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>Queryable<span class="at">)]</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> User <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    age<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table<span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>User<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table<span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>(<span class="dt">i32</span><span class="op">,</span> <span class="dt">String</span><span class="op">,</span> <span class="dt">i32</span>)<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li><p>simplest possible query, loads all users from the
+database</p></li>
+<li><p>Load accepts a generic type to specify the target type for the
+query result -&gt; Should be used to make it obvious to the compiler
+what’s requested</p></li>
+<li><p>Order, count and type of the fields in your struct need to match
+that in your select clause</p></li>
+<li><p>Default select clause: All columns from your table, in the order
+of definition in your table struct</p></li>
+<li><p>Tuple variant loads the same data into a tuple</p></li>
+<li><p>Using this variant might generate “bad” error messages if
+something goes wrong</p></li>
+</ul>
+</aside>
+</section>
+<section id="result-mapping-2" class="slide level3">
+<h3>Result Mapping</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>Queryable<span class="at">)]</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> UserWithName <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    user_name<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table<span class="op">.</span>select((<span class="pp">users::</span>name<span class="op">,</span> <span class="pp">users::</span>id))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>UserWithName<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table<span class="op">.</span>select(<span class="pp">users::</span>id)<span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span><span class="dt">i32</span><span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Using an explicit select clause allows us to list which fields we
+want</li>
+<li>It also allows us to change the field order</li>
+<li>The field name in your rust struct does not have any influence on
+<code>Queryable</code> as it works with the field order</li>
+</ul>
+</aside>
+</section>
+<section id="result-mapping-3" class="slide level3">
+<h3>Result Mapping</h3>
+<pre><code>the trait bound `(diesel::sql_types::Integer, diesel::sql_types::Text, diesel::sql_types::Integer): load_dsl::private::CompatibleType&lt;User, Sqlite&gt;` is not satisfied
+    --&gt; src/main.rs:19:31
+     |
+19   |     users::table.load::&lt;User&gt;(conn);
+     |                  ----         ^^^^ the trait `load_dsl::private::CompatibleType&lt;User, Sqlite&gt;` is not implemented for `(diesel::sql_types::Integer, diesel::sql_types::Text, diesel::sql_types::Integer)`, which is required by `table: LoadQuery&lt;&#39;_, _, User&gt;`
+     |                  |
+     |                  required by a bound introduced by this call
+     |
+     = note: this is a mismatch between what your query returns and what your type expects the query to return
+     = note: the fields in your struct need to match the fields returned by your query in count, order and type
+     = note: consider using `#[derive(Selectable)]` or #[derive(QueryableByName)] + `#[diesel(check_for_backend(Sqlite))]` 
+             on your struct `User` and in your query `.select(User::as_select())` to get a better error message</code></pre>
+<aside class="notes">
+<ul>
+<li>Relatively hard to read, but if you sit down and go through the
+parts you get what’s wrong</li>
+<li>Now at least mentions how to do it better via
+<code>note:</code></li>
+</ul>
+</aside>
+</section>
+<section id="result-mapping-4" class="slide level3">
+<h3>Result Mapping</h3>
+<ul>
+<li>Potentially bad error messages due to field mismatches</li>
+<li>Need to keep field order in struct and select clause in sync</li>
+</ul>
+<p>-&gt; Diesel provides a <code>#[derive(Selectable)]</code> which
+allows to generate a matching select clause from your struct</p>
+</section>
+<section id="result-mapping-5" class="slide level3">
+<h3>Result Mapping</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>Queryable<span class="op">,</span> Selectable<span class="at">)]</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>table_name <span class="op">=</span> users<span class="at">)]</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>check_for_backend<span class="at">(</span><span class="pp">diesel::pg::</span>Pg<span class="at">))]</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> UserWithName <span class="op">{</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">#[</span>diesel<span class="at">(</span>column_name <span class="op">=</span> name<span class="at">)]</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    user_name<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table<span class="op">.</span>select(<span class="pp">UserWithName::</span>as_select())<span class="op">.</span>load(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li><code>Selectable</code> needs to know about the table + column names
+<ul>
+<li>By default infered via the struct name + field names</li>
+<li>field name == column name</li>
+<li>table name == struct name + ‘s’</li>
+<li>Can be explicitly annotated if different</li>
+</ul></li>
+<li><code>check_for_backend</code> optional, but greatly improves error
+messages
+<ul>
+<li>Error message point to struct field instead of query</li>
+</ul></li>
+<li>No equivalent tuple variant here, as it’s now coupled to the
+struct</li>
+<li><code>Selectable</code> also allows more complex select expressions
+via attributes, check the documentation for more details</li>
+</ul>
+</aside>
+</section>
+<section id="result-mapping-6" class="slide level3">
+<h3>Result Mapping</h3>
+<pre><code>error[E0277]: cannot deserialize a value of the database type `diesel::sql_types::Integer` as `*const str`
+  --&gt; src/main.rs:16:9
+   |
+16 |     id: String,
+   |         ^^^^^^ the trait `FromSql&lt;diesel::sql_types::Integer, Sqlite&gt;` is not implemented for `*const str`, which is required by `String: FromSqlRow&lt;diesel::sql_types::Integer, Sqlite&gt;`
+   |
+   = note: double check your type mappings via the documentation of `diesel::sql_types::Integer`
+   = help: the trait `FromSql&lt;diesel::sql_types::Text, Sqlite&gt;` is implemented for `*const str`
+   = help: for that trait implementation, expected `diesel::sql_types::Text`, found `diesel::sql_types::Integer`
+   = note: required for `String` to implement `FromSql&lt;diesel::sql_types::Integer, Sqlite&gt;`
+   = note: required for `String` to implement `diesel::Queryable&lt;diesel::sql_types::Integer, Sqlite&gt;`
+   = note: required for `String` to implement `FromSqlRow&lt;diesel::sql_types::Integer, Sqlite&gt;`</code></pre>
+<aside class="notes">
+<ul>
+<li><p>Much clearer now, points directly to the field</p></li>
+<li><p>(Still not optimal, other features in the rust compiler in the
+pipeline to improve it further)</p></li>
+</ul>
+</aside>
+</section>
+<section id="select-statements-select-clause" class="slide level3">
+<h3>Select Statements (Select Clause)</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table<span class="op">.</span>select((</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">users::</span>id<span class="op">,</span> <span class="co">// select a column,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// select clause part based on selectable</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="pp">UserWithName::</span>as_select()<span class="op">,</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="pp">users::</span>id <span class="op">+</span> <span class="pp">users::</span>id<span class="op">,</span> <span class="co">// arbitary expressions</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="pp">diesel::dsl::</span>date(<span class="pp">diesel::dsl::</span>now)<span class="op">,</span> <span class="co">// SQL function calls</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;abc&quot;</span><span class="op">.</span><span class="pp">into_sql::</span><span class="op">&lt;</span>Text<span class="op">&gt;</span>(()<span class="op">,</span> <span class="co">// constants</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div>
+<ul>
+<li>If not provided a default select clause with all columns of the
+table is generated</li>
+<li>Calling it twice will replace the select clause</li>
+</ul>
+<aside class="notes">
+<ul>
+<li><code>QueryDsl::select</code> allows to customize the select
+clause</li>
+<li>Flexible in what it accepts
+<ul>
+<li>Columns via the DSL provided by the table</li>
+<li>Select expressions based on selectable</li>
+<li>arbitary expressions -&gt; Generates “expected” SQL</li>
+<li>SQL function calls</li>
+<li>Constants</li>
+<li>Mixes of all above</li>
+</ul></li>
+<li>You can also use all of this via <code>Selectable</code></li>
+<li>Allows to write targeted queries matching your use case</li>
+<li>Allows to skip loading unneeded data</li>
+</ul>
+</aside>
+</section>
+<section id="select-statements-where-clause" class="slide level3">
+<h3>Select Statements (Where Clause)</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>filter(<span class="pp">users::</span>id<span class="op">.</span>eq(<span class="dv">42</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>filter(<span class="pp">users::</span>name<span class="op">.</span>like(<span class="st">&quot;%John%&quot;</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>or_filter(<span class="pp">users::</span>name<span class="op">.</span>is_null())</span></code></pre></div>
+<ul>
+<li>If not provided, no where clause is generated</li>
+<li>Calling it twice will append the second call with an
+<code>AND</code> expression</li>
+<li>Filter conditions can be arbitrary expressions that evaluate to
+booleans</li>
+<li>See various <code>ExpressionMethods</code> for expressions</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Allows to construct where clauses step by step</li>
+<li>Allows chaining</li>
+<li>Will talk about expressions later in detail</li>
+</ul>
+</aside>
+</section>
+<section id="select-statements-order-clauses" class="slide level3">
+<h3>Select Statements (Order Clauses)</h3>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table<span class="op">.</span>order_by(<span class="pp">users::</span>id)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>then_order_by((<span class="pp">users::</span>age<span class="op">.</span>desc()<span class="op">,</span> <span class="pp">users::</span>name))</span></code></pre></div>
+<ul>
+<li>If not provided, no order clause is generated</li>
+<li>Accepts a single or multiple expressions</li>
+<li>Default order is <code>ASC</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li><code>then_order_by</code> allows chaining, <code>order_by</code>
+replaces existing clause</li>
+<li><code>asc()</code> also exists for those that want to be
+explicit</li>
+</ul>
+</aside>
+</section>
+<section id="select-statements-other-methods" class="slide level3">
+<h3>Select Statements (Other Methods)</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span>group_by(<span class="pp">users::</span>id)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span>limit(<span class="dv">1</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span>offset(<span class="dv">5</span>)</span></code></pre></div>
+<ul>
+<li>Many other <code>QueryDsl</code> methods for other clauses</li>
+<li><code>GROUP BY</code> is special, as it adds additional
+requirements</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Not shown here: Having clauses, lock clauses, or distinct</li>
+<li>Behaviour similar to previous examples, use as required for your
+use-cases</li>
+<li><code>GROUP BY</code> checked at compile time, will disallow mixed
+aggregate selects
+<ul>
+<li>E.g. group by name, won’t allow you to select id outside of
+aggregate expressions (min/max/etc)</li>
+</ul></li>
+</ul>
+</aside>
+</section>
+<section id="expressions" class="slide level3">
+<h3>Expressions</h3>
+<ul>
+<li>Everything in Diesel is an expression</li>
+<li>Expressions can be combined in all locations</li>
+<li>Diesel provides a lot of functions/trait methods to construct
+expressions</li>
+<li>Diesel also overloads numeric operators (<code>+-*/</code>) so that
+they can be used to combine expressions</li>
+<li>All of them translate essentially literally to the underlying
+SQL</li>
+</ul>
+</section>
+<section id="expressions-1" class="slide level3">
+<h3>Expressions</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span>filter(<span class="pp">users::</span>my_boolean_column) </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span>filter(<span class="pp">users::</span>id<span class="op">.</span>eq(<span class="dv">42</span>)) </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span>filter(<span class="pp">users::</span>id<span class="op">.</span>(<span class="pp">users::</span>age <span class="op">+</span> <span class="pp">users::</span>age)) </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span>filter(<span class="dv">42</span><span class="op">.</span><span class="pp">into_sql::</span><span class="op">&lt;</span>Integer<span class="op">&gt;</span>()<span class="op">.</span>eq(<span class="pp">users::</span>id)) </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span>filter(<span class="pp">users::</span>id<span class="op">.</span>eq(<span class="pp">users::</span>id <span class="op">+</span> <span class="dv">5</span>)<span class="op">.</span>eq(<span class="cn">false</span>)) </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>   <span class="op">.</span>filter(<span class="pp">users::</span>id<span class="op">.</span>eq_any(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>       <span class="pp">posts::</span>table</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>           <span class="op">.</span>filter(<span class="pp">posts::</span>name<span class="op">.</span>eq(<span class="st">&quot;My fancy post&quot;</span>))</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>           <span class="op">.</span>select(<span class="pp">posts::</span>user_id)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    )) </span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Expressions are data type (SQL side) dependent</li>
+<li>Not all data types have all kinds of expressions
+<ul>
+<li>No <code>like</code> for <code>Integer</code> expressions</li>
+<li>No <code>-</code> for <code>Text</code> expressions</li>
+</ul></li>
+<li>Diesel always keeps track of the SQL side type of the expression and
+only allows combinations that result in a valid type</li>
+<li>Possible to mix and match expressions as required (as you would do
+in SQL)</li>
+<li>Rust values (like <code>42</code>) translate to bind values, so they
+are safe from SQL injection issues</li>
+</ul>
+</aside>
+</section>
+<section id="insert-statements" class="slide level3">
+<h3>Insert Statements</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::</span>insert_into(<span class="pp">users::</span>table)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>values((</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        <span class="pp">users::</span>name<span class="op">.</span>eq(<span class="st">&quot;John&quot;</span>)<span class="op">,</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        <span class="pp">users::</span>age<span class="op">.</span>eq(<span class="dv">42</span>)<span class="op">,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    ))<span class="op">.</span>execute(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<ul>
+<li>Creates and executes an <code>INSERT INTO table</code>
+statement</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Allows to specify the insert values as tuple</li>
+<li>Right hand side of the assignment can be arbitrary expression</li>
+<li>Again: Diesel ensures that types match, so you cannot insert a
+<code>i32</code> into a <code>Text</code> column</li>
+<li>We do not yet check if you provide all non-null columns without
+default</li>
+<li>Also possible to perform INSERT FROM SELECT statements, check the
+documentation for that</li>
+</ul>
+</aside>
+</section>
+<section id="insert-statements-1" class="slide level3">
+<h3>Insert Statements</h3>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>Insertable<span class="at">)]</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>table_name <span class="op">=</span> users<span class="at">)]</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> NewUser <span class="op">{</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    age<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> values<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span>NewUser<span class="op">&gt;</span> <span class="op">=</span> <span class="co">/* … */</span><span class="op">;</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::</span>insert_into(<span class="pp">users::</span>table)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>values(values)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>returning(<span class="pp">User::</span>as_returning())</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>get_results(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<ul>
+<li>Insert via struct possible</li>
+<li>Prefer this variant if the struct already exists</li>
+</ul>
+<aside class="notes">
+<ul>
+<li><p>We can also use a struct for inserting values</p></li>
+<li><p>Prefer if the struct already exists, e.g. for json
+deserialization</p></li>
+<li><p>Loading and storing values is decoupled so you can use different
+types for that</p></li>
+<li><p>Types for input and output will differ over time in large
+applications</p></li>
+<li><p>Batch inserts possible, by passing vector of values</p></li>
+<li><p>That also works with the tuple variant</p></li>
+<li><p>Returning enables returning the inserted values (if supported by
+the database system)</p></li>
+<li><p>Same mapping rules as for select statements apply</p></li>
+</ul>
+</aside>
+</section>
+<section id="insert-statements-2" class="slide level3">
+<h3>Insert Statements</h3>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>Insertable<span class="at">)]</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>table_name <span class="op">=</span> users<span class="at">)]</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> NewUser <span class="op">{</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    age<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> value <span class="op">=</span> NewUser <span class="op">{</span> <span class="co">/*…*/</span> <span class="op">};</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::</span>insert_into(<span class="pp">users::</span>table)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>values((value<span class="op">,</span> <span class="pp">users::</span>id<span class="op">.</span>eq(<span class="dv">42</span>)))</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>execute(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Also possible to mix struct + tuple values</li>
+<li>Useful for adding values server side to a set of user provided
+values, e.g. hash password before inserting</li>
+</ul>
+</aside>
+</section>
+<section id="update-statements" class="slide level3">
+<h3>Update Statements</h3>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::</span>update(<span class="pp">users::</span>table<span class="op">.</span>find(<span class="dv">42</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>set((</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        <span class="pp">users::</span>name<span class="op">.</span>eq(<span class="st">&quot;Jane&quot;</span>)<span class="op">,</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        <span class="pp">users::</span>age<span class="op">.</span>eq(<span class="pp">users::</span>age <span class="op">+</span> <span class="dv">5</span><span class="op">.</span><span class="pp">into_sql::</span><span class="op">&lt;</span>Integer<span class="op">&gt;</span>())</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    ))<span class="op">.</span>execute(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<ul>
+<li>Creates a <code>UPDATE table</code> statement</li>
+<li><code>find</code> is a shorthand for
+<code>.filter(users::id.eq(42))</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Can also use different or no filter/find calls</li>
+<li>Right hand side of the assignment can be arbitrary expression</li>
+<li>Again: Diesel ensures that types match, so you cannot insert a
+<code>i32</code> into a <code>Text</code> column</li>
+</ul>
+</aside>
+</section>
+<section id="update-statements-1" class="slide level3">
+<h3>Update Statements</h3>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>AsChangeset<span class="op">,</span> Identifiable<span class="at">)]</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>table_name <span class="op">=</span> users<span class="at">)]</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> UserChangeset <span class="op">{</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    age<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> value <span class="op">=</span> UserChangeset <span class="op">{</span> <span class="co">/*…*/</span> <span class="op">};</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::</span>update(<span class="op">&amp;</span>value)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>set(<span class="op">&amp;</span>value)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>returning(<span class="pp">users::</span>id)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="pp">get_result::</span><span class="op">&lt;</span><span class="dt">i32</span><span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<ul>
+<li>Again: A struct can be used as input</li>
+<li>Prefer this variant if the struct already exists</li>
+<li>Automatic filter by id via <code>Identifiable</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li><code>Identifiable</code> allows the <code>update</code> function to
+automatically construct a <code>find(id)</code> filter</li>
+<li><code>id</code> is not updated</li>
+<li>Returning allows again to return values</li>
+<li>Possible to mix struct + tuple variant similar to what is possible
+for inserts</li>
+<li></li>
+</ul>
+</aside>
+</section>
+<section id="delete-statements" class="slide level3">
+<h3>Delete Statements</h3>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::</span>delete(<span class="pp">users::</span>table<span class="op">.</span>find(<span class="dv">42</span>))<span class="op">.</span>execute(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<ul>
+<li>Constructs a <code>DELETE FROM table</code> statement</li>
+<li>Filter is optional like for updates</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>If you skip the filter you delete all entry in your table</li>
+<li>Also accepts something that implements
+<code>Identifiable</code></li>
+</ul>
+</aside>
+</section>
+<section id="raw-sql-queries" class="slide level3">
+<h3>Raw SQL Queries</h3>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>QueryableByName<span class="at">)]</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>table_name <span class="op">=</span> users<span class="at">)]</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> User <span class="op">{</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::</span>sql_query(<span class="st">&quot;SELECT id, name FROM users WHERE name = $1&quot;</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="pp">bind::</span><span class="op">&lt;</span>Text<span class="op">,</span> _<span class="op">&gt;</span>(<span class="st">&quot;Jane&quot;</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>User<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<ul>
+<li><strong>Do never construct the query string via
+<code>format!()</code></strong></li>
+<li>Commonly used to express queries that cannot be expressed with the
+DSL yet</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Table is optional, can also annotate each field</li>
+<li>Binds allow to safely pass user provided values to the database</li>
+<li>Always requires that the result uses a struct with named fields</li>
+<li>Maps fields by name instead of by order</li>
+</ul>
+</aside>
+</section>
+<section id="complex-queries" class="slide level3">
+<h3>Complex Queries</h3>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="pp">table!</span> <span class="op">{</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    users (id) <span class="op">{</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        id <span class="op">-&gt;</span> Integer<span class="op">,</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        name <span class="op">-&gt;</span> Text<span class="op">,</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="pp">table!</span> <span class="op">{</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    posts (id) <span class="op">{</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        id <span class="op">-&gt;</span> Integer<span class="op">,</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        user_id <span class="op">-&gt;</span> Integer<span class="op">,</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>        title <span class="op">-&gt;</span> Text<span class="op">,</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        body <span class="op">-&gt;</span> Nullable<span class="op">&lt;</span>Text<span class="op">&gt;,</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="complex-queries-1" class="slide level3">
+<h3>Complex Queries</h3>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="pp">table!</span> <span class="op">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    followers (followed_user<span class="op">,</span> following_user) <span class="op">{</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        followed_user <span class="op">-&gt;</span> Integer<span class="op">,</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>        following_user <span class="op">-&gt;</span> Integer<span class="op">,</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="pp">joinable!</span>(posts <span class="op">-&gt;</span> users (user_id))<span class="op">;</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="pp">joinable!</span>(followers <span class="op">-&gt;</span> users (followed_user))<span class="op">;</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="pp">joinable!</span>(followers <span class="op">-&gt;</span> users (following_user))<span class="op">;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Schema used for the next few examples</li>
+<li>Table joined by foreign key</li>
+<li>1:N dependency between <code>users</code> and
+<code>posts</code></li>
+<li>N:M dependency between <code>users</code> via
+<code>followers</code></li>
+</ul>
+</aside>
+</section>
+<section id="complex-queries-the-broken-way" class="slide level3">
+<h3>Complex Queries (The broken way)</h3>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> users <span class="op">=</span> <span class="pp">users::</span>table<span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>User<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> users_with_posts <span class="op">=</span> users<span class="op">.</span>into_iter()</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>map(<span class="op">|</span>u<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> posts <span class="op">=</span> <span class="pp">posts::</span>table<span class="op">.</span>filter(<span class="pp">posts::</span>user_id<span class="op">.</span>eq(u<span class="op">.</span>id))</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>Post<span class="op">&gt;</span>(<span class="op">&amp;</span>mtu conn)<span class="op">?;</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="cn">Ok</span>((u<span class="op">,</span> posts))</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>)<span class="op">.</span>collect()<span class="op">?;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Ask what’s problematic about this</li>
+</ul>
+<p>-&gt; 1+N query problem, we execute an unbound number of queries
+-&gt; Bad for performance</p>
+<ul>
+<li>How to do better? -&gt; Joins -&gt; Association API</li>
+</ul>
+</aside>
+</section>
+<section id="complex-queries-joins" class="slide level3">
+<h3>Complex Queries (Joins)</h3>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table<span class="op">.</span>inner_join(<span class="pp">posts::</span>table)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>(User<span class="op">,</span> Post)<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>inner_join(<span class="pp">posts::</span>table)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>group_by(<span class="pp">users::</span>id)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>select((<span class="pp">User::</span>as_select()<span class="op">,</span> <span class="pp">dsl::</span>count(<span class="pp">posts::</span>id)))</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>(User<span class="op">,</span> <span class="dt">i64</span>)<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<ul>
+<li>Joins are part of the <code>QueryDsl</code></li>
+<li>Map to SQL as expected</li>
+</ul>
+<aside class="notes">
+<ul>
+<li><p><code>ON</code> clauses are inferred via
+<code>joinable!()</code></p></li>
+<li><p>You can provide different <code>ON</code> clauses
+explicitly</p></li>
+<li><p>Diesel will ensure that you only use columns from tables that
+appear in your <code>FROM</code> clause</p></li>
+<li><p>It will also ensure that you consider columns coming from a
+<code>LEFT JOIN</code> as nullable.</p></li>
+<li><p>Joins might duplicate the entities on one side of the join (users
+table in this case)</p></li>
+<li><p>Can have several joins as well</p></li>
+<li><p>Group by can be used to aggregate data from a join</p></li>
+<li><p>Diesel will ensure that you don’t mix aggregate and non-aggregate
+expressions there</p></li>
+</ul>
+</aside>
+</section>
+<section id="complex-queries-associations" class="slide level3">
+<h3>Complex Queries (Associations)</h3>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>Identifiable<span class="op">,</span> Queryable<span class="at">)]</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>table_name <span class="op">=</span> users<span class="at">)]</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> User <span class="op">{</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>Identifiable<span class="op">,</span> Queryable<span class="op">,</span> Associations<span class="at">)]</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>belongs_to<span class="at">(</span>User<span class="at">))]</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>table_name <span class="op">=</span> users<span class="at">)]</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Post <span class="op">{</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    user_id<span class="op">:</span> <span class="dt">i32</span><span class="op">,</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">//…</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Defines data structures for loading data from both tables</li>
+<li>Identifiable allows to get the primary key of an item</li>
+<li>Association defines how to load an item based on another item (posts
+for users in that case)
+<ul>
+<li>Will construct a base query</li>
+<li>Works with single items (one user) and multiple items (users)</li>
+</ul></li>
+</ul>
+</aside>
+</section>
+<section id="complex-queries-associations-1" class="slide level3">
+<h3>Complex Queries (Associations)</h3>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> users <span class="op">=</span> <span class="pp">users::</span>table<span class="op">.</span>load<span class="op">:&lt;</span>User<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> posts <span class="op">=</span> <span class="pp">Post::</span>belonging_to(<span class="op">&amp;</span>users)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>Post<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?</span> <span class="co">// returns `Vec&lt;Post&gt;`</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>grouped_by(<span class="op">&amp;</span>users)<span class="op">;</span> <span class="co">// converts this into `Vec&lt;Vec&lt;Post&gt;&gt;` </span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> user_with_posts<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span>(User<span class="op">,</span> <span class="dt">Vec</span><span class="op">&lt;</span>Post<span class="op">&gt;</span>)<span class="op">&gt;</span> <span class="op">=</span> users<span class="op">.</span>into_iter()</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>zip(posts)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>collect()<span class="op">;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Differences to the native approach:
+<ul>
+<li>Execute always two queries instead of an unbound number</li>
+<li>First load all (relevant) users (You can use arbitary queries
+there)</li>
+<li>After that load all relevant posts (You can chain other queries
+parts after <code>belonging_to()</code></li>
+<li>Finally group by users in your rust code + zip the results</li>
+</ul></li>
+</ul>
+</aside>
+</section>
+<section id="complex-queries-joins-associations" class="slide level3">
+<h3>Complex Queries (Joins + Associations)</h3>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> user <span class="op">=</span> <span class="pp">users::</span>table<span class="op">.</span>filter(<span class="pp">users::</span>name<span class="op">.</span>eq(<span class="st">&quot;Jane&quot;</span>))</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="pp">get_result::</span><span class="op">&lt;</span>User<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> following_user <span class="op">=</span> <span class="pp">Followers::</span>belonging_to(<span class="op">&amp;</span>user)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>inner_join(<span class="pp">users::</span>table)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>select(<span class="pp">User::</span>as_select())</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span>load(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><code>belonging_to</code> just constructs a query targeting the
+<code>followers</code> table</li>
+<li>This query can easily be extended, e.g. by another join</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Allows to easily query complex relationships by combining both
+variants</li>
+</ul>
+</aside>
+</section>
+<section id="transactions" class="slide level3">
+<h3>Transactions</h3>
+<ul>
+<li>Diesel supports database transactions via
+<code>Connection::transaction</code></li>
+</ul>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> last_inserted_user <span class="op">=</span> my_connection<span class="op">.</span>transaction(<span class="op">|</span>conn<span class="op">|</span> <span class="op">{</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">diesel::</span>insert_into(<span class="pp">users::</span>table)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>values(data)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>execute(conn)<span class="op">?;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="pp">users::</span>table</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>order_by(<span class="pp">users::</span>id<span class="op">.</span>desc())</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="pp">first::</span><span class="op">&lt;</span>User<span class="op">&gt;</span>(conn)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>)<span class="op">?;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Transactions accept a closure as argument, that’s run between
+<code>BEGIN</code> and <code>COMMIT</code></li>
+<li>If an error is returned from the closure the transaction is rolled
+back</li>
+<li>Closure design handles all the little tricky details of making sure
+that a transaction is always commited or rolled back for you. (If the
+connection is not fundamentally broken)</li>
+<li>You can nest transactions, diesel will use <code>SAVEPOINTS</code>
+to emulate nested transactions</li>
+<li>Be sure to not use a different connection than that one passed as
+closure argument inside your connection closure</li>
+</ul>
+</aside>
+</section></section>
+<section>
+<section id="exercise-i---basic-diesel"
+class="title-slide slide level2">
+<h2>Exercise I - Basic Diesel</h2>
+
+</section>
+<section id="exercise-i---basic-diesel-1" class="slide level3">
+<h3>Exercise I - Basic Diesel</h3>
+<ul>
+<li>Web Application</li>
+<li>Registration form for running competitions</li>
+<li>Allows to:
+<ul>
+<li>Create and manage different competitions</li>
+<li>Each competition has different races, each race different
+starts</li>
+<li>Participants belong to a certain start and a certain category</li>
+</ul></li>
+<li>Stripped down version of a real world application</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Example: Vienna City Marathon</li>
+<li>Races: Marathon and Half Marathon</li>
+<li>Starts: At different times</li>
+<li>Categories: Male, Femal, Children (with different ages)</li>
+<li>Participants belonging to a category (determined by their age and
+gender) and start at a certain time in a certain race</li>
+<li>Might have some special categories, e.g. the fastest student</li>
+</ul>
+</aside>
+</section>
+<section id="exercise-i---basic-diesel-2" class="slide level3">
+<h3>Exercise I - Basic Diesel</h3>
+<ul>
+<li>Goals:
+<ul>
+<li>Implement competition list (see
+<code>competition_overview.rs</code>)</li>
+<li>Implement registration list (see
+<code>registration_list.rs</code>)</li>
+<li>Implement participant registration (see
+<code>registration.rs</code>)</li>
+<li>Implement handling of special categories</li>
+<li>Implement (parts of) an admin area to modify data (see the
+<code>admin</code> module)</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Ask for help if you are stuck</li>
+<li>I’ve generally let the expected input/output structures in
+place</li>
+<li>Removed all diesel related code at these places, your task is it to
+add that back</li>
+<li>Don’t hesitate to just use place holder values if you cannot fill
+some fields in the first try</li>
+<li>Start from the beginning, don’t worry if you don’t solve all of
+that.</li>
+</ul>
+</aside>
+</section>
+<section id="exercise-i---basic-diesel-3" class="slide level3">
+<h3>Exercise I - Basic Diesel</h3>
+<ul>
+<li>Source code at:
+https://github.com/weiznich/eurorust-2024-diesel-workshop (step-0
+branch)</li>
+</ul>
+</section>
+<section id="exercise-i---basic-diesel-4" class="slide level3">
+<h3>Exercise I - Basic Diesel</h3>
+<ul>
+<li>Short tour through the relevant places in the code</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Talk about where to change things</li>
+<li>Talk about how to start the application</li>
+<li>Talk about how to manually test things</li>
+</ul>
+</aside>
+</section>
+<section id="exercise-i---diesel-extensions" class="slide level3">
+<h3>Exercise I - Diesel Extensions</h3>
+<ul>
+<li>Your Solutions</li>
+<li>(My Solution)</li>
+<li>Your Questions/Problems</li>
+</ul>
+</section></section>
+<section>
+<section id="diesel-async" class="title-slide slide level2">
+<h2>Diesel Async</h2>
+
+</section>
+<section id="what-is-diesel-async" class="slide level3">
+<h3>What is Diesel async</h3>
+<ul>
+<li>An extension crate for diesel</li>
+<li>Provides async counter parts of any method that interacts with a
+connection</li>
+<li>Notably it provides drop in replacements for the
+<code>RunQueryDsl</code> and <code>Connection</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Technically a third party crate, but maintained by me</li>
+<li>For now I want to keep it separate due to shortcomings in the
+language
+<ul>
+<li>Mainly around async drop, but also around some other subile edge
+cases in async rust</li>
+<li>(All that affects <strong>all</strong> async rust database
+crates)</li>
+</ul></li>
+<li>Features pure rust connection implementations for postgresql and
+mysql</li>
+</ul>
+</aside>
+</section>
+<section id="using-diesel-async" class="slide level3">
+<h3>Using Diesel async</h3>
+<p><strong>Normal Diesel</strong></p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">diesel::prelude::</span><span class="op">*;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">mut</span> connection <span class="op">=</span>  <span class="pp">PgConnection::</span>establish(url)<span class="op">?;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> users <span class="op">=</span> <span class="pp">users::</span>table<span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>User<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<p><strong>Async Diesel</strong></p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">diesel::prelude::</span><span class="op">*;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">diesel_async::</span>AsyncPgConnection<span class="op">;</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">diesel_async::</span>RunQueryDsl<span class="op">;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">mut</span> connection <span class="op">=</span> <span class="pp">AsyncPgConnection::</span>establish(url)<span class="op">.</span><span class="kw">await</span><span class="op">?;</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> users <span class="op">=</span> <span class="pp">users::</span>table<span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>User<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">.</span><span class="kw">await</span><span class="op">?;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Mainly just importing the corresponding traits from
+<code>diesel_async</code>and putting a <code>.await</code> after the
+relevant function calls</li>
+</ul>
+</aside>
+</section>
+<section id="advantages-of-diesel-async" class="slide level3">
+<h3>Advantages of Diesel async</h3>
+<ul>
+<li>Does perform async network IO to your database</li>
+<li>Fits better into async systems overall</li>
+<li>Provides pure Rust connection implementations</li>
+<li>Supports query pipelining for PostgreSQL</li>
+</ul>
+<aside class="notes">
+<ul>
+<li><p>Won’t block the executor</p></li>
+<li><p>No need to deal with native dependencies (beside
+libsqlite)</p></li>
+<li><p>Pipelining can improve performance for specific workloads a
+lot</p></li>
+</ul>
+</aside>
+</section>
+<section id="disadvantages-of-diesel-async" class="slide level3">
+<h3>Disadvantages of Diesel async</h3>
+<ul>
+<li>Cannot guarantee proper handling of transactions due to the lack of
+async drop</li>
+<li>Might perform worse than sync diesel connections</li>
+<li>Increased complexity of async ecosystem</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>There is no way to cancel a ongoing transaction if a transaction
+future is dropped</li>
+</ul>
+<p>-&gt; Connection might be in a bad state</p>
+<ul>
+<li><p>Sync diesel uses offical c libaries for the database vendors,
+that got years of optimization. Async diesel uses “unoffical” rust
+reimplementations of these libraries, might perform worse<br />
+</p></li>
+<li><p>Performance hit is especially worse for SQLite (it does not have
+an async mode at all)</p></li>
+<li><p>Async diesel has ~order of magnitude more dependencies due to
+async ecosystem</p></li>
+<li><p>“Funny” errors from rustc if something goes wrong</p></li>
+<li><p>Rustc is essentially saying: I give up here, that’s not
+implemented yet)</p></li>
+<li><p>Happens if you abstract over lifetime using code</p></li>
+</ul>
+</aside>
+</section>
+<section id="when-to-use-which-one" class="slide level3">
+<h3>When to use which one?</h3>
+<p>Use diesel:</p>
+<ul>
+<li>Working in a sync context</li>
+<li>Use SQLite as only backend</li>
+<li>No large number of concurrent requests (with an async connection
+pool)</li>
+</ul>
+<p>Use Diesel-async:</p>
+<ul>
+<li>Enjoy using cutting edge async functionality</li>
+<li>Expected to see traffic spikes or large amounts of requests or
+significant network latency to your database</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Main suggestion: Diesel itself is more than sufficient to handle
+most situations</li>
+<li>Diesel async exists and you can use it if you believe it’s the more
+fitting solution</li>
+<li>Reasoning:
+<ul>
+<li>Theoretical: Database connections are the limited resource in a high
+traffic situations Your service will mostly wait on getting a
+connection, can be easily migrated by using an async pool (as the
+example does)</li>
+<li>Practical: Crates.io is used purely sync diesel up until June, they
+use a mix of sync and async diesel now. (Funnily they use the async
+connection via the sync wrapper, which turns each async call back into a
+sync one). So if you expect less traffic than they, you likely fine with
+all choices.</li>
+<li>If you expect more traffic than Crates.io: You likely need to
+measure. I also would like to hear about your use-case.</li>
+</ul></li>
+</ul>
+</aside>
+</section></section>
+<section>
+<section id="testing-with-diesel" class="title-slide slide level2">
+<h2>Testing with Diesel</h2>
+
+</section>
+<section id="testing-requirements" class="slide level3">
+<h3>Testing Requirements</h3>
+<ul>
+<li>Always test against the same type of database system as you run in
+production</li>
+<li>Tests should be fast to run</li>
+<li>Tests should be require minimal setup</li>
+<li>Tests should be self contained</li>
+</ul>
+<aside class="notes">
+<ul>
+<li><p>Means don’t test against sqlite if you use postgres in production
+-&gt; Otherwise you might run into subtitle bugs and performance
+issues</p></li>
+<li><p>conflicting requirements</p>
+<ul>
+<li>Minimal Setup vs test against the type of DBMS used in
+production</li>
+</ul></li>
+</ul>
+</aside>
+</section>
+<section id="testing-approaches" class="slide level3">
+<h3>Testing Approaches</h3>
+<ul>
+<li>Unit tests</li>
+<li>Integration tests</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Unit tests for your purely database interaction functions are mostly
+not required</li>
+<li>Diesel already has an extensive test suite + provides compile time
+tests</li>
+<li>So no need to check every query on it’s own</li>
+<li>I suggest to focus on integration tests, that verify that your
+application behaviour is correct</li>
+</ul>
+</aside>
+</section>
+<section id="testing-setup" class="slide level3">
+<h3>Testing Setup</h3>
+<ul>
+<li>Run each test in a transaction, roll back the transaction at the end
+of the test</li>
+<li>Advantages:
+<ul>
+<li>Does not clutter the database with test results</li>
+<li>Allows to run tests in parallel as the database isolates each run
+for us</li>
+<li>Relatively low overhead</li>
+</ul></li>
+</ul>
+</section>
+<section id="testing-setup-1" class="slide level3">
+<h3>Testing Setup</h3>
+<ul>
+<li>Disadvantages:
+<ul>
+<li>Need to ensure that each test only ever uses the same
+connection</li>
+<li>Sequences (Auto incrementing ID’s) change between test runs</li>
+<li>Does not work with certain schema modifying operations</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Requires some setup to integrate with “complex” applications</li>
+<li>Same connection requirement is actually good, as you often want that
+anyway</li>
+<li>Postgres/SQLite allow to modify the schema in a transaction and
+revert that change on rollback</li>
+<li>Mysql doesn’t allow that -&gt; apply migrations beforehand</li>
+<li>PostgreSQL disallows certain index creation steps</li>
+</ul>
+</aside>
+</section>
+<section id="testing-setup---example-application" class="slide level3">
+<h3>Testing Setup - Example Application</h3>
+<ul>
+<li>More complicated for our example application</li>
+<li>Need a bit more of setup to make this work</li>
+<li>Axum provides ways to directly interact with the router and call
+methods there</li>
+<li>State can be cloned, so it’s easy to have it in the router and in
+the test</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Application is a webserver</li>
+<li>Running a webserver instance per test seems bad</li>
+<li>I’m not a big fan of the existing macros/crates that just hide away:
+<ul>
+<li>A new webserver per test</li>
+<li>A new database per test</li>
+<li>-&gt; Looks really wasteful and slow compared to a more optimized
+way</li>
+</ul></li>
+<li>This is a one time setup to write the necessary code, after that it
+is really simple to write self containing tests</li>
+<li>State includes database pool, pools can be cloned, but always have
+the same set of connections</li>
+<li>Pool size must be 1 for tests, due to transaction behaviour</li>
+</ul>
+</aside>
+</section>
+<section id="testing-setup---howto" class="slide level3">
+<h3>Testing Setup - HowTo</h3>
+<ol type="1">
+<li>Refactor code that you have a <code>lib.rs</code> and a
+<code>main.rs</code> file</li>
+<li>In <code>lib.rs</code> have a function that constructs your state
+and your router</li>
+<li>State setup: Have a setting that allows you to configure connection
+pool to
+<ol type="1">
+<li>Have a single connection</li>
+<li>Call <code>Connection::begin_test_transaction()</code> on creating a
+new connection</li>
+</ol></li>
+</ol>
+<aside class="notes">
+<ul>
+<li>Similar steps work for other server setup scenarios as well</li>
+</ul>
+</aside>
+</section>
+<section id="testing-setup---howto-1" class="slide level3">
+<h3>Testing Setup - HowTo</h3>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span><span class="pp">tokio::</span>test<span class="at">]</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="kw">fn</span> my_test() <span class="op">{</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> (router<span class="op">,</span> state) <span class="op">=</span> <span class="pp">race_timing::</span>setup(test_config(<span class="cn">true</span>))<span class="op">;</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> resp <span class="op">=</span> router<span class="op">.</span>oneshot(</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>            <span class="pp">Request::</span>get(<span class="st">&quot;/index.html&quot;</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span>body(<span class="pp">Body::</span>empty())</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span>unwrap()</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>        )<span class="op">.</span><span class="kw">await</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>    <span class="pp">assert_eq!</span>(res<span class="op">.</span>status()<span class="op">,</span> <span class="pp">StatusCode::</span><span class="cn">Ok</span>)<span class="op">;</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// possibly interact with the database via state here</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// to check that the database contains the relevant details</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Go through the code line by line</li>
+<li>Explain the details</li>
+</ul>
+</aside>
+</section></section>
+<section>
+<section id="exercise-ii---testing" class="title-slide slide level2">
+<h2>Exercise II - Testing</h2>
+
+</section>
+<section id="exercise-ii---testing-1" class="slide level3">
+<h3>Exercise II - Testing</h3>
+<ul>
+<li>We have written the implementation of several end points in the last
+exercise</li>
+<li>We only manually verified that it looks correct</li>
+<li>We should have (integration) tests for this functionality</li>
+<li>As extended goal: There is a login mechanism in
+<code>admin/users.rs</code> that also needs to be tested</li>
+<li>Source code at:
+https://github.com/weiznich/eurorust-2024-diesel-workshop (step-1
+branch)</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>See the example test that checks that the translation setup works
+for a general example of how testing with axum is supposed to work</li>
+</ul>
+</aside>
+</section>
+<section id="exercise-ii---testing-2" class="slide level3">
+<h3>Exercise II - Testing</h3>
+<ul>
+<li>Your Solutions</li>
+<li>(My Solution)</li>
+<li>Your Questions/Problems</li>
+</ul>
+</section></section>
+<section>
+<section id="diesel-internals" class="title-slide slide level2">
+<h2>Diesel Internals</h2>
+
+</section>
+<section id="how-diesel-works" class="slide level3">
+<h3>How Diesel Works</h3>
+<ul>
+<li>How does Diesel implement these compile time checks internally?</li>
+<li>Trying to answer the following questions:
+<ul>
+<li>How does Diesel build SQL from the query DSL?</li>
+<li>How does Diesel check queries at compile time?</li>
+<li>How does Diesel compose queries from parts?</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Next few slides should give a overview of how this is
+implemented</li>
+<li>Hopefully gives you an idea how things play together</li>
+<li>Should give you a better understanding why things sometimes behave
+in a certain way</li>
+<li>Will show a few simplified core traits in the next few slides</li>
+</ul>
+</aside>
+</section>
+<section id="fundamental-traits---backend" class="slide level3">
+<h3>Fundamental Traits - <code>Backend</code></h3>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> Backend <span class="op">{</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> RawValue<span class="op">&lt;</span><span class="ot">&#39;a</span><span class="op">&gt;;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Central definition of a supported database backend</li>
+<li><code>RawValue&lt;'a&gt;</code> describes how values are represented
+at the protocol values</li>
+<li>Implemented for the zero sized types <code>diesel::pg::Pg</code>,
+<code>diesel::sqlite::Sqlite</code> and
+<code>diesel::mysql::Mysql</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>That would be the entry point if you ever want to add support for an
+unsupported database system to diesel</li>
+<li>Actual connection implementation is decoupled from the backend, as a
+backend could have several connection implementations. E.g. a postgres
+connection based on libpq and one based on the rust postgres
+implementation</li>
+<li>Can also be implemented by third party crates</li>
+</ul>
+</aside>
+</section>
+<section id="fundamental-traits---queryfragment" class="slide level3">
+<h3>Fundamental Traits - <code>QueryFragment</code></h3>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">trait</span> QueryFragment<span class="op">&lt;</span>DB<span class="op">:</span> Backend<span class="op">,</span> SP <span class="op">=</span> NotSpecialized<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> walk_ast<span class="op">&lt;</span><span class="ot">&#39;b</span><span class="op">&gt;</span>(<span class="op">&amp;</span><span class="ot">&#39;b</span> <span class="kw">self</span><span class="op">,</span> pass<span class="op">:</span> AstPass<span class="op">&lt;</span><span class="ot">&#39;_</span><span class="op">,</span> <span class="ot">&#39;b</span><span class="op">,</span> DB<span class="op">&gt;</span>) </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">-&gt;</span> QueryResult<span class="op">&lt;</span>()<span class="op">&gt;;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Trait indicating how to translate some type into SQL</li>
+<li>Used to construct queries</li>
+<li>Helps to perform most of the work at compile time</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Several generic parameters</li>
+<li><code>DB</code> indicate for which backend this particular type can
+be translated to SQL</li>
+<li><code>SP</code> is a helper to allow multiple non-conflicting
+generic impls to coexist</li>
+<li>Output is written into <code>pass</code></li>
+<li>Rather “complicated” lifetime setup to allow SQLite backend to not
+copy any values if not needed</li>
+<li>Lifetime constraint: Anything in passed to <code>pass</code> by
+reference must live at least as long as <code>self</code></li>
+<li>When in doubt just pass owned values</li>
+</ul>
+</aside>
+</section>
+<section id="fundamental-traits---queryfragment-1" class="slide level3">
+<h3>Fundamental Traits - <code>QueryFragment</code></h3>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> <span class="bu">Eq</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;{</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    left<span class="op">:</span> L<span class="op">,</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    right<span class="op">:</span> R<span class="op">,</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span> QueryFragment<span class="op">&lt;</span>Pg<span class="op">&gt;</span> <span class="cf">for</span> <span class="bu">Eq</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    L<span class="op">:</span> QueryFragment<span class="op">&lt;</span>Pg<span class="op">&gt;,</span> R<span class="op">:</span> QueryFragment<span class="op">&lt;</span>Pg<span class="op">&gt;,</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> walk_ast(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> <span class="kw">mut</span> pass<span class="op">:</span> AstPass<span class="op">&lt;</span>DB<span class="op">&gt;</span>) <span class="op">-&gt;</span> QueryResult<span class="op">&lt;</span>()<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>left<span class="op">.</span>walk_ast(pass<span class="op">.</span>reborrow())<span class="op">?;</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>        pass<span class="op">.</span>push_sql(<span class="st">&quot; = &quot;</span>)<span class="op">;</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>right<span class="op">.</span>walk_ast(pass<span class="op">.</span>reborrow())</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Most Diesel types use generic fields, which allows to put in
+“anything”</li>
+<li>Innermost type is often a zero sized struct</li>
+<li>Rust compiler optimizes zero sized structs away, which means it will
+inline the calls to the fields <code>walk_ast</code> methods in that
+case.</li>
+<li>You end up with a bunch of <code>pass.push_sql</code> and
+<code>pass.push_bind_param</code> calls</li>
+<li>For boxed variants things are different, as that will prevent this
+inlining</li>
+</ul>
+</aside>
+</section>
+<section id="fundamental-traits---queryid" class="slide level3">
+<h3>Fundamental Traits - <code>QueryId</code></h3>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> QueryId <span class="op">{</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>     <span class="kw">type</span> QueryId: Any<span class="op">;</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>     <span class="kw">const</span> HAS_STATIC_QUERY_ID<span class="op">:</span> <span class="dt">bool</span><span class="op">;</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>     <span class="kw">fn</span> query_id() <span class="op">-&gt;</span> <span class="dt">Option</span><span class="op">&lt;</span>TypeId<span class="op">&gt;</span> <span class="op">{</span><span class="co">/**/</span><span class="op">}</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span> QueryId <span class="cf">for</span> <span class="bu">Eq</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> L<span class="op">:</span> QueryId<span class="op">,</span> R<span class="op">:</span> QueryId</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> QueryId <span class="op">=</span> <span class="dt">Self</span><span class="op">;</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> HAS_STATIC_QUERY_ID<span class="op">:</span> <span class="dt">bool</span> <span class="op">=</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>       <span class="pp">L::</span>HAS_STATIC_QUERY_ID <span class="op">&amp;&amp;</span> <span class="pp">R::</span>HAS_STATIC_QUERY_ID<span class="op">;</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Used to optimize the prepared statement cache</li>
+<li>Calculate TypeId of the composite type, use that as static prepared
+statement cache key</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Describes how a prepared statement for a certain query kind can be
+cached</li>
+<li>Diesel does support three variants here:
+<ul>
+<li>No caching for queries that might change very time (e.g. anything
+using <code>IN</code> expressions)</li>
+<li>Dynamic query caching by using the Query String as lookup key for
+the cache</li>
+<li>Static query caching by using a static compile time id (Just the
+type id) as lookup key</li>
+</ul></li>
+<li>Static query caching has the advantage that we don’t need to build
+the query at all if we already executed it once. It’s in the statement
+cache in that case and we can use the type’s type id to look it up. The
+type id is fixed at comple time</li>
+</ul>
+</aside>
+</section>
+<section id="fundamental-traits---expression" class="slide level3">
+<h3>Fundamental Traits - <code>Expression</code></h3>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">trait</span> Expression <span class="op">{</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> SqlType<span class="op">;</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span> Expression <span class="cf">for</span> <span class="bu">Eq</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> SqlType <span class="op">=</span> Bool<span class="op">;</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>A marker trait representing a typed SQL fragment</li>
+<li>Used for type checking the final query</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Allows us to transport which SQL side type a query fragment has</li>
+<li>We can include restrictions based on this, by saying we only allow
+<code>Text</code> or whatever other type here</li>
+</ul>
+</aside>
+</section>
+<section id="expanded-example-query" class="slide level3">
+<h3>Expanded Example Query</h3>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="pp">users::</span>table<span class="op">.</span>filter(<span class="pp">users::</span>id<span class="op">.</span>eq(<span class="dv">42</span>))<span class="op">.</span>select(<span class="pp">users::</span>id)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">// That&#39;s the internal private type</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>SelectStatement<span class="op">&lt;</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    FromClause<span class="op">&lt;</span><span class="pp">users::</span>table<span class="op">&gt;,</span> </span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    SelectClause<span class="op">&lt;</span><span class="pp">users::</span>id<span class="op">&gt;,</span> </span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    WhereClause<span class="op">&lt;</span><span class="bu">Eq</span><span class="op">&lt;</span><span class="pp">users::</span>id<span class="op">,</span> Bound<span class="op">&lt;</span><span class="dt">i32</span><span class="op">,</span> Integer<span class="op">&gt;&gt;&gt;,</span> </span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Skipped some more parameters for other clauses</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">diesel::dsl::</span><span class="op">*;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co">// that&#39;s the public way to write these types</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>Select<span class="op">&lt;</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    Filter<span class="op">&lt;</span><span class="pp">users::</span>table<span class="op">,</span> <span class="bu">Eq</span><span class="op">&lt;</span><span class="pp">users::</span>id<span class="op">,</span> <span class="dt">i32</span><span class="op">&gt;&gt;,</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="pp">users::</span>id</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co">// or just annotate the function that returns a query/expression</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co">// with `#[diesel::dsl::auto_type]` and use `_` as return type</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Diesel constructs nested complex types</li>
+<li>Most types that are used to express queries are not public</li>
+<li>We export helper types via <code>diesel::dsl</code> to construct an
+equivalent type easier</li>
+<li>Repetitive task, as these helper types need to exactly mirror your
+query</li>
+<li>There is also the <code>#[diesel::dsl::auto_type]</code> macro that
+does this for you</li>
+</ul>
+</aside>
+</section>
+<section id="dynamic-queries" class="slide level3">
+<h3>Dynamic Queries</h3>
+<ul>
+<li>Everything shown so far requires a static query, due to how Diesel
+represents queries at compile time</li>
+<li>Possible to make certain parts dynamic</li>
+<li>These query parts <strong>always</strong> need to be known
+statically:
+<ul>
+<li><code>SELECT</code> clauses</li>
+<li><code>FROM</code> clauses</li>
+<li><code>GROUP BY</code> clauses</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>From clauses need to be known to check if expressions are valid for
+this clause</li>
+<li>Select clauses types need to be known to check if fields returned by
+the query have certain types</li>
+<li>group by clauses need to be known to check if there are no mixed
+aggregates</li>
+</ul>
+</aside>
+</section>
+<section id="dynamic-queries---boxed-queries" class="slide level3">
+<h3>Dynamic Queries - Boxed queries</h3>
+<ul>
+<li>Boxing the whole query allows to dynamically add most query
+parts</li>
+</ul>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">mut</span> user_query <span class="op">=</span> <span class="pp">users::</span>table<span class="op">.</span>into_boxed()<span class="op">;</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">!</span>user_is_admin <span class="op">{</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    user_query <span class="op">=</span> user_query<span class="op">.</span>filter(<span class="pp">users::</span>name<span class="op">.</span>eq(username))<span class="op">;</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Essentially boxes the whole query</li>
+<li>Allows to dynamically add query parts</li>
+<li>Minimal performance overhead due to boxing + dynamic dispatch</li>
+<li>That’s only measurable for trivial SQLite queries</li>
+</ul>
+</aside>
+</section>
+<section id="dynamic-queries---boxed-expressions" class="slide level3">
+<h3>Dynamic Queries - Boxed expressions</h3>
+<ul>
+<li>Boxing certain expressions to dynamically replace them</li>
+</ul>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> expr <span class="op">=</span> <span class="cf">if</span> user_is_admin <span class="op">{</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">users::</span>name<span class="op">.</span>like(<span class="pp">format!</span>(<span class="st">&quot;%{name}%&quot;</span>)))</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">as</span> <span class="dt">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> BoxableExpression<span class="op">&lt;</span>_<span class="op">,</span> _<span class="op">,</span> SqlType <span class="op">=</span> _<span class="op">&gt;&gt;</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">users::</span>id<span class="op">.</span>eq(my_user_id)) </span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> users <span class="op">=</span> <span class="pp">users::</span>table<span class="op">.</span>filter(expr)<span class="op">.</span><span class="pp">load::</span><span class="op">&lt;</span>User<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Boxing only a specific part of the query</li>
+<li>Makes it easy to compose a single query part dynamically</li>
+</ul>
+</aside>
+</section>
+<section id="fundamental-traits---fromsql" class="slide level3">
+<h3>Fundamental Traits - <code>FromSql</code></h3>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">trait</span> FromSql<span class="op">&lt;</span>A<span class="op">,</span> DB<span class="op">:</span> Backend<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> from_sql(bytes<span class="op">:</span> <span class="pp">DB::</span>RawValue<span class="op">&lt;</span><span class="ot">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span><span class="dt">Self</span><span class="op">&gt;;</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Describes how to translate from the SQL side representation to a
+Rust type</li>
+<li>Generic type <code>A</code> is the SQL side type</li>
+<li><code>Self</code> is the rust side type</li>
+<li>Can be backend specific via <code>DB</code></li>
+<li>Need to derive <code>FromSqlRow</code> if you implement this
+trait</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>You can implement this trait for your own types</li>
+<li>e.g <code>Jsonb</code> -&gt; <code>serde_json::Value</code> mapping
+for PostgreSQL</li>
+</ul>
+</aside>
+</section>
+<section id="fundamental-traits---tosql" class="slide level3">
+<h3>Fundamental Traits - <code>ToSql</code></h3>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">trait</span> ToSql<span class="op">&lt;</span>A<span class="op">,</span> DB<span class="op">:</span> Backend<span class="op">&gt;:</span> <span class="bu">Debug</span> <span class="op">{</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> to_sql<span class="op">&lt;</span><span class="ot">&#39;b</span><span class="op">&gt;</span>(<span class="op">&amp;</span><span class="ot">&#39;b</span> <span class="kw">self</span><span class="op">,</span> out<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> Output<span class="op">&lt;</span><span class="ot">&#39;b</span><span class="op">,</span> <span class="ot">&#39;_</span><span class="op">,</span> DB<span class="op">&gt;</span>) </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">;</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<ul>
+<li>Describes how to translate a Rust type into the SQL side
+representation</li>
+<li>Generic type <code>A</code> is the SQL side type</li>
+<li><code>Self</code> is the rust side type</li>
+<li>Can be backend specific via <code>DB</code></li>
+<li>Need to derive <code>AsExpression</code> if you implement this
+trait</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>For mysql/postgres: The output is a byte buffer you can write to via
+<code>std::io::Write</code></li>
+<li>For sqlite: You explictly need to set one of the supported value
+types</li>
+</ul>
+</aside>
+</section></section>
+<section>
+<section id="extending-diesel" class="title-slide slide level2">
+<h2>Extending Diesel</h2>
+
+</section>
+<section id="ways-to-extend-diesel" class="slide level3">
+<h3>Ways to extend Diesel</h3>
+<ul>
+<li>Most parts of Diesel can be extended:
+<ul>
+<li>Type mappings by implementing <code>FromSql</code> and
+<code>ToSql</code></li>
+<li>Custom Query DSL parts</li>
+<li>Custom Connection types by implementing <code>Connection</code></li>
+<li>Custom Backends by implementing <code>Backend</code> +
+<code>Connection</code></li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>You could go as far as throw away all the DSL provided by diesel and
+bring your own, while using the existing connections.</li>
+<li>Or you can implement a new Backend/Connection combination to add
+support for a new database system while using the existing DSL</li>
+<li>Let me know if you are interested in that far reaching topics, can
+talk about that later</li>
+</ul>
+</aside>
+</section>
+<section id="custom-types" class="slide level3">
+<h3>Custom Types</h3>
+<ul>
+<li>Need to handle with two different types
+<ul>
+<li>SQL side type, e.g. <code>diesel::sql_types::Integer</code></li>
+<li>Rust side type, e.g. <code>i32</code></li>
+</ul></li>
+<li>Need to implement <code>FromSql</code> + <code>ToSql</code></li>
+<li>Need to derive <code>FromSqlRow</code> and
+<code>AsExpression</code></li>
+</ul>
+<aside class="notes">
+<ul>
+<li><p>The SQL side type cannot store any data, it’s a zero sized marker
+struct</p></li>
+<li><p>Rust side type allows to store data</p></li>
+<li><p>System allows:</p>
+<ul>
+<li>Flexible Mapping, e.g. map the same rust type to different SQL types
+and vice versa</li>
+<li>Bring your own types</li>
+</ul></li>
+<li><p><code>FromSql</code> + <code>FromSqlRow</code> for
+loading</p></li>
+<li><p><code>ToSql</code> + <code>AsExpression</code> for sending data
+to the database</p></li>
+<li><p>Could implement only one side, advised to implement both</p></li>
+</ul>
+</aside>
+</section>
+<section id="custom-types---example" class="slide level3">
+<h3>Custom Types - Example</h3>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>SqlType<span class="at">)]</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>postgres_type<span class="at">(</span>name <span class="op">=</span> <span class="st">&quot;MyEnum&quot;</span><span class="at">))]</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> MyEnum<span class="op">;</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span>AsExpression<span class="op">,</span> FromSqlRow<span class="at">)]</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>sql_type <span class="op">=</span> MyEnum<span class="at">)]</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>diesel<span class="at">(</span>sql_type <span class="op">=</span> Integer<span class="at">)]</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> Test <span class="op">{</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>    VariantA<span class="op">,</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>    VariantB<span class="op">,</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>    VariantC<span class="op">,</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li><p>Zero sized struct <code>MyEnum</code> is only required if you
+define a new SQL type in your database, e.g. a postgres enum</p></li>
+<li><p>Can be generated for you by <code>diesel-cli</code></p></li>
+<li><p>Our type doesn’t need to be an enum, it’s just a common
+example</p></li>
+<li><p>AsExpression + FromSqlRow must be derived for the type</p></li>
+<li><p><code>sql_type</code> must match the expected database SQL
+type</p></li>
+<li><p>Can appear several times to map to different types</p></li>
+</ul>
+</aside>
+</section>
+<section id="custom-types---example-1" class="slide level3">
+<h3>Custom Types - Example</h3>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> FromSql<span class="op">&lt;</span>MyEnum<span class="op">,</span> Pg<span class="op">&gt;</span> <span class="cf">for</span> Test <span class="op">{</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> from_sql(bytes<span class="op">:</span> PgValue) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span><span class="dt">Self</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">match</span> bytes<span class="op">.</span>as_bytes() <span class="op">{</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>            <span class="st">b&quot;VariantA&quot;</span> <span class="op">=&gt;</span> <span class="cn">Ok</span>(<span class="dt">Self</span><span class="pp">::</span>VariantA)<span class="op">,</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>            <span class="co">// …</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> FromSql<span class="op">&lt;</span>Integer<span class="op">,</span> Sqlite<span class="op">&gt;</span> <span class="cf">for</span> Test <span class="op">{</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> from_sql(bytes<span class="op">:</span> SqliteValue) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span><span class="dt">Self</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> value <span class="op">=</span> <span class="op">&lt;</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>            <span class="dt">i32</span> <span class="kw">as</span> FromSql<span class="op">&lt;</span>Integer<span class="op">,</span> Sqlite<span class="op">&gt;</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;</span><span class="pp">::</span>from_sql(bytes)<span class="op">?</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">match</span> value <span class="op">{</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span> <span class="op">=&gt;</span> <span class="cn">Ok</span>(<span class="dt">Self</span><span class="pp">::</span>VariantA)</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">// …</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Different backend need different implementations</li>
+<li>For Postgresql/Mysql: Data are send as bytes over network, need to
+parse these</li>
+<li>For SQLite: Opaque value, relay on existing <code>FromSql</code>
+implementations to get value</li>
+<li>(The later also works for Postgresql/Mysql if you can work with an
+existing impl)</li>
+</ul>
+</aside>
+</section>
+<section id="custom-types---example-2" class="slide level3">
+<h3>Custom Types - Example</h3>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> ToSql<span class="op">&lt;</span>MyEnum<span class="op">,</span> Pg<span class="op">&gt;</span> <span class="cf">for</span> Test <span class="op">{</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> to_sql<span class="op">&lt;</span><span class="ot">&#39;b</span><span class="op">&gt;</span>(<span class="op">&amp;</span><span class="ot">&#39;b</span> <span class="kw">self</span><span class="op">,</span> out<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> Output<span class="op">&lt;</span><span class="ot">&#39;b</span><span class="op">,</span> <span class="ot">&#39;_</span><span class="op">,</span> Pg<span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="dt">Result</span> <span class="op">{</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">match</span> <span class="kw">self</span> <span class="op">{</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Self</span><span class="pp">::</span>VariantA <span class="op">=&gt;</span> <span class="cn">Ok</span>(out<span class="op">.</span>write(<span class="st">b&quot;VariantA&quot;</span>)<span class="op">?</span>)<span class="op">,</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>      <span class="co">// …</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="cn">Ok</span>(<span class="pp">IsNull::</span>No)</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span> ToSql<span class="op">&lt;</span>Integer<span class="op">,</span> Sqlite<span class="op">&gt;</span> <span class="cf">for</span> Test <span class="op">{</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fn</span> to_sql<span class="op">&lt;</span><span class="ot">&#39;b</span><span class="op">&gt;</span>(<span class="op">&amp;</span><span class="ot">&#39;b</span> <span class="kw">self</span><span class="op">,</span> out<span class="op">:</span> <span class="op">&amp;</span><span class="kw">mut</span> Output<span class="op">&lt;</span><span class="ot">&#39;b</span><span class="op">,</span> <span class="ot">&#39;_</span><span class="op">,</span> Sqlite<span class="op">&gt;</span>) </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">-&gt;</span> <span class="dt">Result</span> <span class="op">{</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> v <span class="op">=</span> <span class="cf">match</span> <span class="kw">self</span> <span class="op">{</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Self</span><span class="pp">::</span>VariantA <span class="op">=&gt;</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">};</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    out<span class="op">.</span>set_value(v)<span class="op">;</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="cn">Ok</span>(<span class="pp">IsNull::</span>No)</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Similar as before different impls for different backend
+required</li>
+<li>Again: Postgres/Mysql send bytes, so write to a byte buffer</li>
+<li>For SQLite: Again opaque value</li>
+</ul>
+</aside>
+</section>
+<section id="custom-query-dsl" class="slide level3">
+<h3>Custom Query DSL</h3>
+<ul>
+<li>Several variants to extent Diesel’s DSL
+<ul>
+<li>via <code>define_sql_function!()</code> to setup a new “bindings”
+for a SQL function</li>
+<li>via
+<code>infix_operator!</code>/<code>prefix_operator!</code>/<code>postfix_operator!</code>
+to setup bindings for a SQL operator</li>
+<li>by implementing <code>QueryFragment</code>, <code>Expression</code>
+and <code>QueryId</code> for your type</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Fully custom variant might need additional traits/derives
+<code>ValidGrouping</code> and <code>SelectableExpression</code></li>
+<li>Depending on the use case one or the other variant can be
+useful</li>
+</ul>
+</aside>
+</section>
+<section id="custom-query-dsl---define_sql_function"
+class="slide level3">
+<h3>Custom Query DSL - <code>define_sql_function!()</code></h3>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="pp">define_sql_function!</span> <span class="op">{</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> lower(x<span class="op">:</span> Text) <span class="op">-&gt;</span> Text<span class="op">;</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co">/// use it like</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::</span>select(lower(<span class="st">&quot;TEST&quot;</span>))<span class="op">.</span><span class="pp">get_result::</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="co">/// for sqlite</span></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="pp">lower_utils::</span>register_impl(connection<span class="op">,</span> <span class="op">|</span>x<span class="op">:</span> <span class="dt">String</span><span class="op">|</span> <span class="op">{</span></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>    x<span class="op">.</span>to_lowercase()</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span>)<span class="op">?;</span></span></code></pre></div>
+<ul>
+<li>Allows to define “bindings” for SQL function</li>
+<li>Arguments defined in terms of SQL types</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Also allows to use generic arguments + limited amount of trait
+bounds</li>
+<li>For not built-in functions using the SQLite backend: Need to
+register an implementation, can easily be provided as rust function</li>
+<li>Also possible to define aggregate functions</li>
+</ul>
+</aside>
+</section>
+<section id="custom-query-dsl---infix_operator" class="slide level3">
+<h3>Custom Query DSL - <code>infix_operator!()</code></h3>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="pp">infix_operator!</span>(Concat<span class="op">,</span> <span class="st">&quot; || &quot;</span>)<span class="op">;</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co">/// use it like </span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="pp">diesel::</span>select(</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>        <span class="pp">Concat::</span>new(</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;T&quot;</span><span class="op">.</span><span class="pp">into_sql::</span><span class="op">&lt;</span>Text<span class="op">&gt;</span>()<span class="op">,</span> </span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;EST&quot;</span><span class="op">.</span><span class="pp">into_sql::</span><span class="op">&lt;</span>Text<span class="op">&gt;</span>()</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    )<span class="op">.</span><span class="pp">get_result::</span><span class="op">&lt;</span>Text<span class="op">&gt;</span>(<span class="op">&amp;</span><span class="kw">mut</span> conn)<span class="op">?;</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>Might want to define a wrapping function/method as shown in the
+documentation</li>
+<li>Also variants for prefix/postfix operators</li>
+<li>Can be restricted to work with a single backend</li>
+</ul>
+</aside>
+</section>
+<section id="custom-query-dsl---queryfragment" class="slide level3">
+<h3>Custom Query DSL - <code>QueryFragment</code></h3>
+<ul>
+<li>Low level approach</li>
+<li>Gives you the greatest amount of control</li>
+<li>Used by the macros internally</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Essentially allows you to express almost anything</li>
+<li>Extensions for FROM clauses are hard, other things are easier.</li>
+</ul>
+</aside>
+</section>
+<section id="custom-query-dsl---queryfragment-1" class="slide level3">
+<h3>Custom Query DSL - <code>QueryFragment</code></h3>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">// also derive `QueryId` and `ValidGrouping` for the Eq struct</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span> QueryFragment<span class="op">&lt;</span>Pg<span class="op">&gt;</span> <span class="cf">for</span> <span class="bu">Eq</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    L<span class="op">:</span> QueryFragment<span class="op">&lt;</span>Pg<span class="op">&gt;,</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    R<span class="op">:</span> QueryFragment<span class="op">&lt;</span>Pg<span class="op">&gt;,</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> walk_ast(<span class="op">&amp;</span><span class="kw">self</span><span class="op">,</span> <span class="kw">mut</span> pass<span class="op">:</span> AstPass<span class="op">&lt;</span>DB<span class="op">&gt;</span>) </span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">-&gt;</span> QueryResult<span class="op">&lt;</span>()<span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>left<span class="op">.</span>walk_ast(pass<span class="op">.</span>reborrow())<span class="op">?;</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>        pass<span class="op">.</span>push_sql(<span class="st">&quot; = &quot;</span>)<span class="op">;</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">self</span><span class="op">.</span>right<span class="op">.</span>walk_ast(pass<span class="op">.</span>reborrow())<span class="op">?;</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>        <span class="cn">Ok</span>(())</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+</section>
+<section id="custom-query-dsl---queryfragment-2" class="slide level3">
+<h3>Custom Query DSL - <code>QueryFragment</code></h3>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="kw">impl</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span> Expression <span class="cf">for</span> <span class="bu">Eq</span><span class="op">&lt;</span>L<span class="op">,</span> R<span class="op">&gt;</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    L<span class="op">:</span> Expression<span class="op">,</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    R<span class="op">:</span> Expression<span class="op">,</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">type</span> SqlType <span class="op">=</span> Bool<span class="op">;</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<aside class="notes">
+<ul>
+<li>By implementing each of the traits we have control about a certain
+part of diesels behaviour</li>
+<li><code>QueryFragment</code> allows us to control the generated
+SQL</li>
+<li><code>QueryId</code> allows us to generate the prepared statement
+caching behaviour</li>
+<li><code>Expression</code> allows us to specify for what diesel should
+treat that extension</li>
+</ul>
+</aside>
+</section></section>
+<section>
+<section id="exercise-iii---diesel-extensions"
+class="title-slide slide level2">
+<h2>Exercise III - Diesel Extensions</h2>
+
+</section>
+<section id="exercise-iii---diesel-extensions-1" class="slide level3">
+<h3>Exercise III - Diesel Extensions</h3>
+<ul>
+<li>We want to switch the ID type from integer to UUID</li>
+<li>Steps:
+<ol type="1">
+<li>Custom type mapping for <code>uuid::Uuid</code></li>
+<li>SQL function for generating UUID values</li>
+<li>Change the <code>schema.rs</code> file</li>
+<li>Switch the ID type by changing the <code>ID</code> typedef in the
+<code>database</code> module</li>
+<li>We need to migrate existing data</li>
+</ol></li>
+<li>We want to have unit tests for the first two steps</li>
+</ul>
+<aside class="notes">
+<ul>
+<li><p>Why: Uuid’s cannot be guessed, so the application is more
+secure</p></li>
+<li><p>Why a custom type mapping? Because SQLite does not have a native
+UUID type</p></li>
+<li><p>We will store it as Binary column in the database</p></li>
+<li><p>Add the <code>uuid</code> crate as dependency</p></li>
+<li><p>Use <code>define_sql_function!()</code> to define a new SQL
+function</p></li>
+<li><p>Need to register the function in the
+<code>register_functions</code> function in
+<code>diesel_ext</code></p></li>
+<li><p>The code for this lives mostly in the <code>diesel_ext</code>
+module</p></li>
+<li><p>The migration is the extended goal, requires quite a bit of
+work</p></li>
+<li><p>Required steps:</p>
+<ul>
+<li>Disable diesel’s built-in mechanism to run migrations in
+transactions</li>
+<li>Disable foreign key constraints in your migrations</li>
+<li>Start a transaction on your own</li>
+<li>Create new tables for every table that needs a UUID id</li>
+<li>Insert all data from the old tables into the new table</li>
+<li>Drop the old tables</li>
+<li>Rename the new tables</li>
+<li>Commit the transaction</li>
+<li>Reenable foreign key constraints</li>
+</ul></li>
+<li><p>Alternative:</p>
+<ul>
+<li>Remove the database and change the default migration</li>
+<li>Much faster, but you cannot do that with a real production
+database</li>
+</ul></li>
+</ul>
+</aside>
+</section>
+<section id="exercise-iii---diesel-extensions-2" class="slide level3">
+<h3>Exercise III - Diesel Extensions</h3>
+<ul>
+<li>Your Solutions</li>
+<li>(My Solution)</li>
+<li>Your Questions/Problems</li>
+</ul>
+</section></section>
+<section>
+<section id="summary-and-outlook" class="title-slide slide level2">
+<h2>Summary and Outlook</h2>
+
+</section>
+<section id="summary-and-outlook-1" class="slide level3">
+<h3>Summary and Outlook</h3>
+<ul>
+<li>Covered Topics:
+<ul>
+<li>Basic CRUD with Diesel</li>
+<li>Diesel Async and when it’s useful</li>
+<li>Testing with Diesel</li>
+<li>Diesel Internals</li>
+<li>Diesel Extensions</li>
+</ul></li>
+</ul>
+</section>
+<section id="outlook" class="slide level3">
+<h3>Outlook</h3>
+<ul>
+<li>Existing, but unmentioned functionality
+<ul>
+<li>How to abstract over different database backends (see
+<code>diesel::MultiConnection</code>)</li>
+<li>A lot of database specific functionality like <code>upserts</code>
+or <code>COPY TO</code> statements</li>
+</ul></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Last time to ask questions is now</li>
+<li>(Can also reach me later on github/mastodon, but please make public
+posts)</li>
+<li>I’m interested in feedback to the workshop</li>
+</ul>
+</aside>
+</section></section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
